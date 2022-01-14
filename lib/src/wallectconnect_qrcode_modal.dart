@@ -15,8 +15,10 @@ class WalletConnectQrCodeModal {
     return WalletConnectQrCodeModal._internal(connector: connector);
   }
 
+  WalletConnect get connector => _connector;
+
   /// Create a new session.
-  Future<SessionStatus> connect(
+  Future<SessionStatus?> connect(
     BuildContext context, {
     int? chainId,
   }) async {
@@ -76,24 +78,40 @@ class WalletConnectQrCodeModal {
       );
 
   // PRIVATE
-
   final WalletConnect _connector;
 
   WalletConnectQrCodeModal._internal({
     required WalletConnect connector,
   }) : _connector = connector;
 
-  Future<SessionStatus> _createSessionWithModal(
+  Future<SessionStatus?> _createSessionWithModal(
     BuildContext context, {
     int? chainId,
   }) async {
-    return await _connector.createSession(
-      chainId: chainId,
-      onDisplayUri: (uri) async => await showDialog(
-          context: context,
-          useSafeArea: true,
-          barrierDismissible: true,
-          builder: (context) => ModalMainPage(uri: uri)),
-    );
+    try {
+      bool isDismissed = false;
+
+      final session = await _connector.createSession(
+          chainId: chainId,
+          onDisplayUri: (uri) async {
+            await showDialog(
+                context: context,
+                useSafeArea: true,
+                barrierDismissible: true,
+                builder: (context) => ModalMainPage(uri: uri));
+
+            // dialog dismissed
+            isDismissed = true;
+          });
+
+      if (!isDismissed) {
+        Navigator.of(context).pop();
+      }
+
+      return session;
+    } catch (e) {
+      print('Error connecting to session: $e');
+    }
+    return null;
   }
 }

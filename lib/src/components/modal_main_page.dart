@@ -26,7 +26,7 @@ class _ModalMainPageState extends State<ModalMainPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         height: max(500, MediaQuery.of(context).size.height * 0.5),
         child: Card(
