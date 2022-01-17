@@ -17,7 +17,8 @@ class WalletConnectQrCodeModal {
 
   WalletConnect get connector => _connector;
 
-  /// Create a new session.
+  /// Connect to a new session.
+  /// [context] is needed to show the QR code dialog.
   Future<SessionStatus?> connect(
     BuildContext context, {
     int? chainId,
@@ -32,6 +33,7 @@ class WalletConnectQrCodeModal {
     return await _createSessionWithModal(context, chainId: chainId);
   }
 
+  /// Send custom request with [method], [params] and optional [topic].
   Future<void> sendCustomRequest({
     required String method,
     required List<dynamic> params,
@@ -39,15 +41,18 @@ class WalletConnectQrCodeModal {
   }) async =>
       await _connector.sendCustomRequest(method: method, params: params);
 
-  /// Kill the current session.
+  /// Kill the current session with [sessionError].
   Future<void> killSession({String? sessionError}) async =>
       await _connector.killSession(sessionError: sessionError);
 
-  /// Set the default signing provider.
+  /// Set the default signing [provider].
   void setDefaultProvider(WalletConnectProvider provider) =>
       _connector.setDefaultProvider(provider);
 
-  /// Sign a transaction.
+  /// Sign an unsigned [transaction] with [params] by sending a request to the wallet.
+  /// Default provider is used unless [provider] is specified.
+  /// Returns the signed transaction bytes.
+  /// Throws [WalletConnectException] if unable to sign the transaction.
   Future<List<Uint8List>> signTransaction(
     Uint8List transaction, {
     Map<String, dynamic> params = const {},
@@ -56,7 +61,10 @@ class WalletConnectQrCodeModal {
       await _connector.signTransaction(transaction,
           params: params, provider: provider);
 
-  /// Sign transactions.
+  /// Sign an unsigned [transactions] with [params] by sending a request to the wallet.
+  /// Default provider is used unless [provider] is specified.
+  /// Returns the signed transaction bytes.
+  /// Throws [WalletConnectException] if unable to sign the transactions.
   Future<List<Uint8List>> signTransactions(
     List<Uint8List> transactions, {
     Map<String, dynamic> params = const {},
@@ -66,6 +74,9 @@ class WalletConnectQrCodeModal {
           params: params, provider: provider);
 
   /// Register callback listeners.
+  /// [onConnect] is triggered when session is connected.
+  /// [onSessionUpdate] is triggered when session is updated.
+  /// [onDisconnect] is triggered when session is disconnected.
   void registerListeners({
     OnConnectRequest? onConnect,
     OnSessionUpdate? onSessionUpdate,

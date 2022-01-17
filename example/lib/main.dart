@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'algorand_test_connector.dart';
 
@@ -42,6 +41,18 @@ class _TestPageState extends State<TestPage> {
   final AlgorandTestConnector connector = AlgorandTestConnector();
 
   TransactionState _state = TransactionState.disconnected;
+
+  @override
+  void initState() {
+    connector.registerListeners(
+        // connected
+        (session) => print('Connected: $session'),
+        // session updated
+        (response) => print('Session updated: $response'),
+        // disconnected
+        () => print('Disconnected'));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

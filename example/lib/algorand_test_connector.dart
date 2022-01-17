@@ -9,6 +9,7 @@ class AlgorandTestConnector {
       connector: WalletConnect(
         bridge: 'https://bridge.walletconnect.org',
         clientMeta: const PeerMeta(
+          // <-- Meta data of your app appearing in the wallet when connecting
           name: 'QRCodeModalExampleApp',
           description: 'WalletConnect Developer App',
           url: 'https://walletconnect.org',
@@ -25,6 +26,17 @@ class AlgorandTestConnector {
   Future<SessionStatus?> connect(BuildContext context) async {
     return await _connector.connect(context, chainId: 4160);
   }
+
+  void registerListeners(
+    OnConnectRequest? onConnect,
+    OnSessionUpdate? onSessionUpdate,
+    OnDisconnect? onDisconnect,
+  ) =>
+      _connector.registerListeners(
+        onConnect: onConnect,
+        onSessionUpdate: onSessionUpdate,
+        onDisconnect: onDisconnect,
+      );
 
   Future<String> sendTestingAlgo(SessionStatus session) async {
     final sender = Address.fromAlgorandAddress(address: session.accounts[0]);
