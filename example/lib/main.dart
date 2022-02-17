@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qrcode_modal_example/test_connector.dart';
 
 import 'algorand_test_connector.dart';
+import 'ethereum_test_connector.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,9 +40,14 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
-  final AlgorandTestConnector connector = AlgorandTestConnector();
+  TestConnector connector = EthereumTestConnector();
+
+  static const _networks = ['Ethereum', 'Algorand'];
+  static const _coins = ['Eth', 'Algo'];
 
   TransactionState _state = TransactionState.disconnected;
+  String? _networkName = _networks.first;
+  String? _coinName = _coins.first;
 
   @override
   void initState() {
@@ -50,7 +57,10 @@ class _TestPageState extends State<TestPage> {
         // session updated
         (response) => print('Session updated: $response'),
         // disconnected
-        () => print('Disconnected'));
+        () {
+      setState(() => _state = TransactionState.disconnected);
+      print('Disconnected');
+    });
     super.initState();
   }
 
@@ -60,30 +70,56 @@ class _TestPageState extends State<TestPage> {
       appBar: AppBar(
         title: const Text('QRCode Modal Example'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: 16,
+      body: Column(
+        children: [
+          Row(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Text('Select network: '),
               ),
-              child: Text(
-                'Click on the button below to transfer 0.0001 Algo from the Algorand account connected through WalletConnect to the same account.',
-                style: Theme.of(context).textTheme.headline6,
-                textAlign: TextAlign.center,
+              Expanded(
+                child: DropdownButton(
+                  value: _networkName,
+                  items: _networks
+                      .map(
+                        (value) => DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: _changeNetwork,
+                ),
               ),
+            ],
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 16,
+                  ),
+                  child: Text(
+                    'Click on the button below to transfer 0.0001 $_coinName from the $_networkName account connected through WalletConnect to the same account.',
+                    style: Theme.of(context).textTheme.headline6,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _transactionStateToAction(context, state: _state),
+                  child: Text(
+                    _transactionStateToString(state: _state),
+                  ),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: _transactionStateToAction(context, state: _state),
-              child: Text(
-                _transactionStateToString(state: _state),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -129,7 +165,7 @@ class _TestPageState extends State<TestPage> {
               setState(() => _state = TransactionState.transferring);
 
               try {
-                await connector.sendTestingAlgo(session);
+                await connector.sendTestingAmount(session);
                 setState(() => _state = TransactionState.success);
               } catch (e) {
                 print('Transaction error: $e');
@@ -146,5 +182,28 @@ class _TestPageState extends State<TestPage> {
       case TransactionState.failed:
         return null;
     }
+  }
+
+  void _changeNetwork(String? network) {
+    if (network == null || _networkName == network) return;
+
+    final index = _networks.indexOf(network);
+    // update connector
+    switch (index) {
+      case 0:
+        connector = EthereumTestConnector();
+        break;
+      case 1:
+        connector = AlgorandTestConnector();
+        break;
+    }
+
+    setState(
+      () {
+        _networkName = network;
+        _coinName = _coins[index];
+        _state = TransactionState.disconnected;
+      },
+    );
   }
 }

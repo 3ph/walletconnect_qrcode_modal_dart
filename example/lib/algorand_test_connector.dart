@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:walletconnect_qrcode_modal_dart/walletconnect_qrcode_modal_dart.dart';
 
-class AlgorandTestConnector {
+import 'test_connector.dart';
+
+class AlgorandTestConnector implements TestConnector {
   AlgorandTestConnector() {
     _connector = WalletConnectQrCodeModal(
       connector: WalletConnect(
@@ -20,13 +22,15 @@ class AlgorandTestConnector {
       ),
     );
 
-    _connector.setDefaultProvider(AlgorandWCProvider(_connector.connector));
+    _provider = AlgorandWalletConnectProvider(_connector.connector);
   }
 
+  @override
   Future<SessionStatus?> connect(BuildContext context) async {
     return await _connector.connect(context, chainId: 4160);
   }
 
+  @override
   void registerListeners(
     OnConnectRequest? onConnect,
     OnSessionUpdate? onSessionUpdate,
@@ -38,7 +42,8 @@ class AlgorandTestConnector {
         onDisconnect: onDisconnect,
       );
 
-  Future<String> sendTestingAlgo(SessionStatus session) async {
+  @override
+  Future<String> sendTestingAmount(SessionStatus session) async {
     final sender = Address.fromAlgorandAddress(address: session.accounts[0]);
 
     // Fetch the suggested transaction params
@@ -55,7 +60,7 @@ class AlgorandTestConnector {
 
     // Sign the transaction
     final txBytes = Encoder.encodeMessagePack(transaction.toMessagePack());
-    final signedBytes = await _connector.signTransaction(
+    final signedBytes = await _provider.signTransaction(
       txBytes,
       params: {
         'message': 'Optional description message',
@@ -76,6 +81,7 @@ class AlgorandTestConnector {
   }
 
   late final WalletConnectQrCodeModal _connector;
+  late final AlgorandWalletConnectProvider _provider;
   late final _algorand = Algorand(
     algodClient: AlgodClient(apiUrl: AlgoExplorer.TESTNET_ALGOD_API_URL),
   );

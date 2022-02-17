@@ -45,34 +45,6 @@ class WalletConnectQrCodeModal {
   Future<void> killSession({String? sessionError}) async =>
       await _connector.killSession(sessionError: sessionError);
 
-  /// Set the default signing [provider].
-  void setDefaultProvider(WalletConnectProvider provider) =>
-      _connector.setDefaultProvider(provider);
-
-  /// Sign an unsigned [transaction] with [params] by sending a request to the wallet.
-  /// Default provider is used unless [provider] is specified.
-  /// Returns the signed transaction bytes.
-  /// Throws [WalletConnectException] if unable to sign the transaction.
-  Future<List<Uint8List>> signTransaction(
-    Uint8List transaction, {
-    Map<String, dynamic> params = const {},
-    WalletConnectProvider? provider,
-  }) async =>
-      await _connector.signTransaction(transaction,
-          params: params, provider: provider);
-
-  /// Sign an unsigned [transactions] with [params] by sending a request to the wallet.
-  /// Default provider is used unless [provider] is specified.
-  /// Returns the signed transaction bytes.
-  /// Throws [WalletConnectException] if unable to sign the transactions.
-  Future<List<Uint8List>> signTransactions(
-    List<Uint8List> transactions, {
-    Map<String, dynamic> params = const {},
-    WalletConnectProvider? provider,
-  }) async =>
-      await _connector.signTransactions(transactions,
-          params: params, provider: provider);
-
   /// Register callback listeners.
   /// [onConnect] is triggered when session is connected.
   /// [onSessionUpdate] is triggered when session is updated.
@@ -111,8 +83,9 @@ class WalletConnectQrCodeModal {
                 barrierDismissible: true,
                 builder: (context) => ModalMainPage(uri: uri));
 
-            // dialog dismissed
+            // dialog dismissed without connecting
             isDismissed = true;
+            await _connector.killSession();
           });
 
       if (!isDismissed) {
