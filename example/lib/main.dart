@@ -13,6 +13,7 @@ enum TransactionState {
   connecting,
   connected,
   connectionFailed,
+  connectionCancelled,
   transferring,
   success,
   failed,
@@ -134,6 +135,8 @@ class _TestPageState extends State<TestPage> {
         return 'Session connected, preparing transaction...';
       case TransactionState.connectionFailed:
         return 'Connection failed';
+      case TransactionState.connectionCancelled:
+        return 'Connection cancelled';
       case TransactionState.transferring:
         return 'Transaction in progress...';
       case TransactionState.success:
@@ -145,6 +148,7 @@ class _TestPageState extends State<TestPage> {
 
   VoidCallback? _transactionStateToAction(BuildContext context,
       {required TransactionState state}) {
+    print('State: ${_transactionStateToString(state: state)}');
     switch (state) {
       // Progress, action disabled
       case TransactionState.connecting:
@@ -154,6 +158,7 @@ class _TestPageState extends State<TestPage> {
 
       // Initiate the connection
       case TransactionState.disconnected:
+      case TransactionState.connectionCancelled:
       case TransactionState.connectionFailed:
         return () async {
           setState(() => _state = TransactionState.connecting);
@@ -173,7 +178,7 @@ class _TestPageState extends State<TestPage> {
               }
             });
           } else {
-            setState(() => _state = TransactionState.connectionFailed);
+            setState(() => _state = TransactionState.connectionCancelled);
           }
         };
 

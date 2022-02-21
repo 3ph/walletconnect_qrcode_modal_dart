@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
@@ -72,26 +73,39 @@ class WalletConnectQrCodeModal {
   }) async {
     try {
       bool isDismissed = false;
+      bool sessionCreated = false;
 
-      final session = await _connector.createSession(
-          chainId: chainId,
-          onDisplayUri: (uri) async {
-            await showDialog(
-                context: context,
-                useSafeArea: true,
-                barrierDismissible: true,
-                builder: (context) => ModalMainPage(uri: uri));
+      final CancelableCompleter cancelableCompleter = CancelableCompleter();
+      final Completer<SessionStatus?> completer = Completer();
 
-            // dialog dismissed without connecting
-            isDismissed = true;
-            await _connector.killSession();
-          });
+      cancelableCompleter.complete(
+        _connector.createSession(
+            chainId: chainId,
+            onDisplayUri: (uri) async {
+              await showDialog(
+                  context: context,
+                  useSafeArea: true,
+                  barrierDismissible: true,
+                  builder: (context) => ModalMainPage(uri: uri));
 
-      if (!isDismissed) {
-        Navigator.of(context).pop();
-      }
+              isDismissed = true;
+              if (!sessionCreated) {
+                // dialog dismissed without connecting, cancel session creation
+                cancelableCompleter.operation.cancel();
+                completer.complete(null);
+              }
+            }),
+      );
 
-      return session;
+      cancelableCompleter.operation.value.then((session) {
+        sessionCreated = true;
+        if (!isDismissed) {
+          Navigator.of(context).pop();
+        }
+        completer.complete(session);
+      });
+
+      return completer.future;
     } catch (e) {
       print('Error connecting to session: $e');
     }
