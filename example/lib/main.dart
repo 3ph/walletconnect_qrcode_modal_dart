@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qrcode_modal_example/test_connector.dart';
+import 'package:qrcode_modal_example/wallet.dart';
 
 import 'algorand_test_connector.dart';
 import 'ethereum_test_connector.dart';
@@ -8,15 +9,12 @@ void main() {
   runApp(const MyApp());
 }
 
-enum TransactionState {
+enum ConnectionState {
   disconnected,
   connecting,
   connected,
   connectionFailed,
   connectionCancelled,
-  transferring,
-  success,
-  failed,
 }
 
 class MyApp extends StatelessWidget {
@@ -43,12 +41,10 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
   TestConnector connector = EthereumTestConnector();
 
-  static const _networks = ['Ethereum', 'Algorand'];
-  static const _coins = ['Eth', 'Algo'];
+  static const _networks = ['Ethereum (Ropsten)', 'Algorand (Testnet)'];
 
-  TransactionState _state = TransactionState.disconnected;
+  ConnectionState _state = ConnectionState.disconnected;
   String? _networkName = _networks.first;
-  String? _coinName = _coins.first;
 
   @override
   void initState() {
@@ -59,7 +55,7 @@ class _TestPageState extends State<TestPage> {
         (response) => print('Session updated: $response'),
         // disconnected
         () {
-      setState(() => _state = TransactionState.disconnected);
+      setState(() => _state = ConnectionState.disconnected);
       print('Disconnected');
     });
     super.initState();
@@ -103,11 +99,11 @@ class _TestPageState extends State<TestPage> {
                   padding: const EdgeInsets.only(
                     left: 16,
                     right: 16,
-                    bottom: 16,
+                    bottom: 32,
                   ),
                   child: Text(
-                    'Click on the button below to transfer 0.0001 $_coinName from the $_networkName account connected through WalletConnect to the same account.',
-                    style: Theme.of(context).textTheme.headline6,
+                    'Connect to the $_networkName account through WalletConnect.\n\nPlease note that the transaction will be send to testnet network no matter what your Wallet is set to.',
+                    style: Theme.of(context).textTheme.bodyText1,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -125,67 +121,54 @@ class _TestPageState extends State<TestPage> {
     );
   }
 
-  String _transactionStateToString({required TransactionState state}) {
+  String _transactionStateToString({required ConnectionState state}) {
     switch (state) {
-      case TransactionState.disconnected:
+      case ConnectionState.disconnected:
         return 'Connect!';
-      case TransactionState.connecting:
+      case ConnectionState.connecting:
         return 'Connecting';
-      case TransactionState.connected:
-        return 'Session connected, preparing transaction...';
-      case TransactionState.connectionFailed:
+      case ConnectionState.connected:
+        return 'Session connected';
+      case ConnectionState.connectionFailed:
         return 'Connection failed';
-      case TransactionState.connectionCancelled:
+      case ConnectionState.connectionCancelled:
         return 'Connection cancelled';
-      case TransactionState.transferring:
-        return 'Transaction in progress...';
-      case TransactionState.success:
-        return 'Transaction successful';
-      case TransactionState.failed:
-        return 'Transaction failed';
     }
   }
 
+  void _openWalletPage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => WalletPage(connector: connector),
+      ),
+    );
+  }
+
   VoidCallback? _transactionStateToAction(BuildContext context,
-      {required TransactionState state}) {
+      {required ConnectionState state}) {
     print('State: ${_transactionStateToString(state: state)}');
     switch (state) {
       // Progress, action disabled
-      case TransactionState.connecting:
-      case TransactionState.transferring:
-      case TransactionState.connected:
+      case ConnectionState.connecting:
         return null;
+      case ConnectionState.connected:
+        // Open new page
+        return () => _openWalletPage();
 
       // Initiate the connection
-      case TransactionState.disconnected:
-      case TransactionState.connectionCancelled:
-      case TransactionState.connectionFailed:
+      case ConnectionState.disconnected:
+      case ConnectionState.connectionCancelled:
+      case ConnectionState.connectionFailed:
         return () async {
-          setState(() => _state = TransactionState.connecting);
+          setState(() => _state = ConnectionState.connecting);
           final session = await connector.connect(context);
           if (session != null) {
-            setState(() => _state = TransactionState.connected);
-            Future.delayed(const Duration(seconds: 1), () async {
-              // Initiate the transaction
-              setState(() => _state = TransactionState.transferring);
-
-              try {
-                await connector.sendTestingAmount(session);
-                setState(() => _state = TransactionState.success);
-              } catch (e) {
-                print('Transaction error: $e');
-                setState(() => _state = TransactionState.failed);
-              }
-            });
+            setState(() => _state = ConnectionState.connected);
+            Future.delayed(Duration.zero, () => _openWalletPage());
           } else {
-            setState(() => _state = TransactionState.connectionCancelled);
+            setState(() => _state = ConnectionState.connectionCancelled);
           }
         };
-
-      // Finished
-      case TransactionState.success:
-      case TransactionState.failed:
-        return null;
     }
   }
 
@@ -206,8 +189,7 @@ class _TestPageState extends State<TestPage> {
     setState(
       () {
         _networkName = network;
-        _coinName = _coins[index];
-        _state = TransactionState.disconnected;
+        _state = ConnectionState.disconnected;
       },
     );
   }

@@ -80,29 +80,71 @@ class EthereumTestConnector implements TestConnector {
       );
 
   @override
-  Future<String> sendTestingAmount(SessionStatus session) async {
-    final sender = EthereumAddress.fromHex(session.accounts[0]);
+  Future<String?> sendTestingAmount({
+    required String recipientAddress,
+    required double amount,
+  }) async {
+    final sender =
+        EthereumAddress.fromHex(_connector.connector.session.accounts[0]);
+    final recipient = EthereumAddress.fromHex(address);
+
+    final etherAmount = EtherAmount.fromUnitAndValue(
+        EtherUnit.szabo, (amount * 1000 * 1000).toInt());
 
     final transaction = Transaction(
-      to: sender,
+      to: recipient,
       from: sender,
       gasPrice: EtherAmount.inWei(BigInt.one),
       maxGas: 100000,
-      value: EtherAmount.fromUnitAndValue(EtherUnit.finney, 1),
+      value: etherAmount,
     );
 
     final credentials = WalletConnectEthereumCredentials(provider: _provider);
 
     // Sign the transaction
-    final txBytes = await _ethereum.sendTransaction(credentials, transaction);
+    try {
+      final txBytes = await _ethereum.sendTransaction(credentials, transaction);
+      return txBytes;
+    } catch (e) {
+      print('Error: $e');
+    }
 
     // Kill the session
     // _connector.killSession();
 
-    return txBytes;
+    return null;
   }
+
+  @override
+  Future<double> getBalance() async {
+    final address =
+        EthereumAddress.fromHex(_connector.connector.session.accounts[0]);
+    final amount = await _ethereum.getBalance(address);
+    return amount.getValueInUnit(EtherUnit.ether).toDouble();
+  }
+
+  @override
+  bool validateAddress({required String address}) {
+    try {
+      EthereumAddress.fromHex(address);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  String get faucetUrl => 'https://faucet.dimensions.network/';
+
+  @override
+  String get address => _connector.connector.session.accounts[0];
+
+  @override
+  String get coinName => 'Eth';
 
   late final WalletConnectQrCodeModal _connector;
   late final EthereumWalletConnectProvider _provider;
-  final _ethereum = Web3Client('https://ropsten.infura.io/', Client());
+  final _ethereum = Web3Client(
+      'https://ropsten.infura.io/v3/0db053799f0e48e99357b6dce022b1e7',
+      Client());
 }

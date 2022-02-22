@@ -43,8 +43,13 @@ class AlgorandTestConnector implements TestConnector {
       );
 
   @override
-  Future<String> sendTestingAmount(SessionStatus session) async {
-    final sender = Address.fromAlgorandAddress(address: session.accounts[0]);
+  Future<String?> sendTestingAmount({
+    required String recipientAddress,
+    required double amount,
+  }) async {
+    final sender = Address.fromAlgorandAddress(
+        address: _connector.connector.session.accounts[0]);
+    final recipient = Address.fromAlgorandAddress(address: recipientAddress);
 
     // Fetch the suggested transaction params
     final params = await _algorand.getSuggestedTransactionParams();
@@ -53,8 +58,8 @@ class AlgorandTestConnector implements TestConnector {
     final transaction = await (PaymentTransactionBuilder()
           ..sender = sender
           ..noteText = 'Signed with WalletConnectQrCodeModal'
-          ..amount = Algo.toMicroAlgos(0.0001)
-          ..receiver = sender
+          ..amount = Algo.toMicroAlgos(amount / 1000000)
+          ..receiver = recipient
           ..suggestedParams = params)
         .build();
 
@@ -68,17 +73,49 @@ class AlgorandTestConnector implements TestConnector {
     );
 
     // Broadcast the transaction
-    final txId = await _algorand.sendRawTransactions(
-      signedBytes,
-      waitForConfirmation: true,
-    );
+    try {
+      final txId = await _algorand.sendRawTransactions(
+        signedBytes,
+        waitForConfirmation: true,
+      );
+      return txId;
+    } catch (e) {
+      print('Error: $e');
+    }
 
     // Kill the session
     // TODO: session is killed before transaction is finished
     // _connector.killSession();
 
-    return txId;
+    return null;
   }
+
+  @override
+  Future<double> getBalance() async {
+    final address = _connector.connector.session.accounts[0];
+    // balance in microAlgos
+    final balance = await _algorand.getBalance(address);
+    return balance / 1000000;
+  }
+
+  @override
+  bool validateAddress({required String address}) {
+    try {
+      Address.fromAlgorandAddress(address: address);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  String get faucetUrl => 'https://bank.testnet.algorand.network/';
+
+  @override
+  String get address => _connector.connector.session.accounts[0];
+
+  @override
+  String get coinName => 'Algo';
 
   late final WalletConnectQrCodeModal _connector;
   late final AlgorandWalletConnectProvider _provider;
