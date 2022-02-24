@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'components/modal_main_page.dart';
+import 'models/wallet.dart';
+import 'utils/utils.dart';
 
 class WalletConnectQrCodeModal {
   factory WalletConnectQrCodeModal({
@@ -60,8 +64,25 @@ class WalletConnectQrCodeModal {
         onDisconnect: onDisconnect,
       );
 
+  /// Try to open Wallet selected during session creation.
+  /// For iOS will try to open previously selected Wallet
+  /// For Android will open system dialog
+  Future<void> openWalletApp() async {
+    if (_uri == null) return;
+
+    if (Platform.isIOS) {
+      if (_wallet == null) return;
+
+      await Utils.iosLaunch(wallet: _wallet!, uri: _uri!);
+    } else {
+      await launch(_uri!);
+    }
+  }
+
   // PRIVATE
   final WalletConnect _connector;
+  Wallet? _wallet;
+  String? _uri;
 
   WalletConnectQrCodeModal._internal({
     required WalletConnect connector,
@@ -71,22 +92,30 @@ class WalletConnectQrCodeModal {
     BuildContext context, {
     int? chainId,
   }) async {
-    try {
-      bool isDismissed = false;
-      bool sessionCreated = false;
+    bool isDismissed = false;
+    bool sessionCreated = false;
 
-      final CancelableCompleter cancelableCompleter = CancelableCompleter();
-      final Completer<SessionStatus?> completer = Completer();
+    // clear previous selected wallet data
+    _wallet = null;
+    _uri = null;
 
-      cancelableCompleter.complete(
-        _connector.createSession(
+    final CancelableCompleter cancelableCompleter = CancelableCompleter();
+    final Completer<SessionStatus?> completer = Completer();
+
+    Future<SessionStatus?> createSession() async {
+      try {
+        final session = await _connector.createSession(
             chainId: chainId,
             onDisplayUri: (uri) async {
+              _uri = uri;
               await showDialog(
                   context: context,
                   useSafeArea: true,
                   barrierDismissible: true,
-                  builder: (context) => ModalMainPage(uri: uri));
+                  builder: (context) => ModalMainPage(
+                        uri: uri,
+                        walletCallback: (wallet) => _wallet = wallet,
+                      ));
 
               isDismissed = true;
               if (!sessionCreated) {
@@ -94,21 +123,26 @@ class WalletConnectQrCodeModal {
                 cancelableCompleter.operation.cancel();
                 completer.complete(null);
               }
-            }),
-      );
-
-      cancelableCompleter.operation.value.then((session) {
-        sessionCreated = true;
-        if (!isDismissed) {
-          Navigator.of(context).pop();
-        }
-        completer.complete(session);
-      });
-
-      return completer.future;
-    } catch (e) {
-      print('Error connecting to session: $e');
+            });
+        return session;
+      } catch (e) {
+        print('Error: $e');
+        Navigator.of(context).pop();
+      }
     }
-    return null;
+
+    cancelableCompleter.complete(createSession());
+
+    cancelableCompleter.operation.value.then((session) {
+      sessionCreated = true;
+      if (!isDismissed) {
+        Navigator.of(context).pop();
+      }
+      if (!completer.isCompleted) {
+        completer.complete(session);
+      }
+    });
+
+    return completer.future;
   }
 }

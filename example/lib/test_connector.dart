@@ -9,6 +9,8 @@ abstract class TestConnector {
     required double amount,
   });
 
+  Future<void> openWalletApp();
+
   Future<double> getBalance();
 
   bool validateAddress({required String address});

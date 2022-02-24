@@ -1,19 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import '../components/modal_main_page.dart';
 import '../models/wallet.dart';
 import '../store/wallet_store.dart';
+import '../utils/utils.dart';
 
 class ModalWalletIOSPage extends StatelessWidget {
   const ModalWalletIOSPage({
     required this.uri,
     this.store = const WalletStore(),
+    this.walletCallback,
     Key? key,
   }) : super(key: key);
 
   final String uri;
   final WalletStore store;
+  final WalletCallback? walletCallback;
 
   @override
   Widget build(BuildContext context) {
@@ -43,22 +46,8 @@ class ModalWalletIOSPage extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: GestureDetector(
                           onTap: () async {
-                            if (await canLaunch(wallet.mobile.universal)) {
-                              await launch(
-                                _convertToWcLink(
-                                    appLink: wallet.mobile.universal,
-                                    wcUri: uri),
-                                forceSafariVC: false,
-                                universalLinksOnly: true,
-                              );
-                            } else if (await canLaunch(wallet.mobile.native)) {
-                              await launch(
-                                _convertToWcLink(
-                                    appLink: wallet.mobile.native, wcUri: uri),
-                              );
-                            } else {
-                              await launch(wallet.app.ios);
-                            }
+                            walletCallback?.call(wallet);
+                            Utils.iosLaunch(wallet: wallet, uri: uri);
                           },
                           child: Row(
                             children: [
@@ -119,10 +108,4 @@ class ModalWalletIOSPage extends StatelessWidget {
       },
     );
   }
-
-  String _convertToWcLink({
-    required String appLink,
-    required String wcUri,
-  }) =>
-      '$appLink/wc?uri=${Uri.encodeComponent(wcUri)}';
 }

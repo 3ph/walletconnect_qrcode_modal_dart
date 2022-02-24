@@ -8,17 +8,23 @@ import 'modal_qrcode_page.dart';
 import 'modal_wallet_ios_page.dart';
 import 'modal_wallet_android_page.dart';
 
+import '../models/wallet.dart';
+
 class ModalMainPage extends StatefulWidget {
   const ModalMainPage({
     required this.uri,
+    this.walletCallback,
     Key? key,
   }) : super(key: key);
 
   final String uri;
+  final WalletCallback? walletCallback;
 
   @override
   State<ModalMainPage> createState() => _ModalMainPageState();
 }
+
+typedef WalletCallback = Function(Wallet);
 
 class _ModalMainPageState extends State<ModalMainPage> {
   int? _groupValue = 0;
@@ -59,6 +65,7 @@ class _ModalMainPageState extends State<ModalMainPage> {
                   Expanded(
                     child: _ModalContent(
                       groupValue: _groupValue!,
+                      walletCallback: widget.walletCallback,
                       uri: widget.uri,
                     ),
                   ),
@@ -76,17 +83,19 @@ class _ModalContent extends StatelessWidget {
   const _ModalContent({
     required this.groupValue,
     required this.uri,
+    this.walletCallback,
     Key? key,
   }) : super(key: key);
 
   final int groupValue;
   final String uri;
+  final WalletCallback? walletCallback;
 
   @override
   Widget build(BuildContext context) {
     if (groupValue == 0) {
       if (Platform.isIOS) {
-        return ModalWalletIOSPage(uri: uri);
+        return ModalWalletIOSPage(uri: uri, walletCallback: walletCallback);
       } else {
         return ModalWalletAndroidPage(uri: uri);
       }

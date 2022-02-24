@@ -91,6 +91,9 @@ class AlgorandTestConnector implements TestConnector {
   }
 
   @override
+  Future<void> openWalletApp() async => await _connector.openWalletApp();
+
+  @override
   Future<double> getBalance() async {
     final address = _connector.connector.session.accounts[0];
     // balance in microAlgos

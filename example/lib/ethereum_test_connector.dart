@@ -116,6 +116,9 @@ class EthereumTestConnector implements TestConnector {
   }
 
   @override
+  Future<void> openWalletApp() async => await _connector.openWalletApp();
+
+  @override
   Future<double> getBalance() async {
     final address =
         EthereumAddress.fromHex(_connector.connector.session.accounts[0]);

@@ -185,6 +185,9 @@ class _WalletPageState extends State<WalletPage> {
       case TransactionState.idle:
         // Send transaction
         setState(() => state = TransactionState.sending);
+
+        Future.delayed(Duration.zero, () => widget.connector.openWalletApp());
+
         final hash = await widget.connector.sendTestingAmount(
             recipientAddress: addressController.text,
             amount: double.parse(amountController.text));
@@ -207,6 +210,7 @@ class _WalletPageState extends State<WalletPage> {
     Clipboard.setData(ClipboardData(text: widget.connector.address));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        duration: Duration(milliseconds: 500),
         content: Text('Address copied!'),
       ),
     );
