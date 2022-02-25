@@ -161,12 +161,17 @@ class _TestPageState extends State<TestPage> {
       case ConnectionState.connectionFailed:
         return () async {
           setState(() => _state = ConnectionState.connecting);
-          final session = await connector.connect(context);
-          if (session != null) {
-            setState(() => _state = ConnectionState.connected);
-            Future.delayed(Duration.zero, () => _openWalletPage());
-          } else {
-            setState(() => _state = ConnectionState.connectionCancelled);
+          try {
+            final session = await connector.connect(context);
+            if (session != null) {
+              setState(() => _state = ConnectionState.connected);
+              Future.delayed(Duration.zero, () => _openWalletPage());
+            } else {
+              setState(() => _state = ConnectionState.connectionCancelled);
+            }
+          } catch (e) {
+            print('WC exception occured: $e');
+            setState(() => _state = ConnectionState.connectionFailed);
           }
         };
     }

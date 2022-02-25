@@ -93,6 +93,7 @@ class WalletConnectQrCodeModal {
     int? chainId,
   }) async {
     bool isDismissed = false;
+    bool isError = false;
     bool sessionCreated = false;
 
     // clear previous selected wallet data
@@ -118,7 +119,7 @@ class WalletConnectQrCodeModal {
                       ));
 
               isDismissed = true;
-              if (!sessionCreated) {
+              if (!sessionCreated && !isError) {
                 // dialog dismissed without connecting, cancel session creation
                 cancelableCompleter.operation.cancel();
                 completer.complete(null);
@@ -126,8 +127,9 @@ class WalletConnectQrCodeModal {
             });
         return session;
       } catch (e) {
-        print('Error: $e');
+        isError = true;
         Navigator.of(context).pop();
+        rethrow;
       }
     }
 
@@ -141,6 +143,9 @@ class WalletConnectQrCodeModal {
       if (!completer.isCompleted) {
         completer.complete(session);
       }
+    }).catchError((error) {
+      print(error);
+      completer.completeError(error);
     });
 
     return completer.future;
