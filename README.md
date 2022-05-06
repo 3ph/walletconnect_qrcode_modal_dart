@@ -95,11 +95,6 @@ The aim of the example app is to demonstrate simple transaction using QR code mo
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Contributing & Pull Requests
-Feel free to send pull requests.
-
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
-
 ## Credits
 
 - [Tom Friml](https://github.com/3ph)
