@@ -1,6 +1,6 @@
 name: walletconnect_qrcode_modal_dart
 description: QR code modal package for WalletConnect.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart
 issue_tracker: https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart/issues
 

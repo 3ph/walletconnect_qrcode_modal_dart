@@ -20,7 +20,7 @@ The package uses [walletconnect-dart] package for underlying WalletConnect commu
 ## Usage
 
 <p>
-<img src="ios.gif">
+<img src="https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart/raw/main/ios.gif">
 </p>
 
 Once installed, you can simply connect your application to a wallet.
