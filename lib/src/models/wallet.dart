@@ -6,8 +6,8 @@ part 'wallet.g.dart';
 class Wallet {
   final String id;
   final String name;
-  final String description;
-  final String homepage;
+  final String? description;
+  final String? homepage;
   final List<String> chains;
 
   final WalletAppLinks app;
@@ -33,8 +33,8 @@ class Wallet {
 
 @JsonSerializable()
 class WalletLinks {
-  final String native;
-  final String universal;
+  final String? native;
+  final String? universal;
 
   WalletLinks({
     required this.native,
@@ -48,9 +48,9 @@ class WalletLinks {
 
 @JsonSerializable()
 class WalletAppLinks {
-  final String browser;
-  final String ios;
-  final String android;
+  final String? browser;
+  final String? ios;
+  final String? android;
 
   WalletAppLinks({
     required this.browser,
@@ -65,7 +65,7 @@ class WalletAppLinks {
 
 @JsonSerializable()
 class WalletMetadata {
-  final String shortName;
+  final String? shortName;
 
   WalletMetadata({
     required this.shortName,

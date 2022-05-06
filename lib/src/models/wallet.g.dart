@@ -9,8 +9,8 @@ part of 'wallet.dart';
 Wallet _$WalletFromJson(Map<String, dynamic> json) => Wallet(
       id: json['id'] as String,
       name: json['name'] as String,
-      description: json['description'] as String,
-      homepage: json['homepage'] as String,
+      description: json['description'] as String?,
+      homepage: json['homepage'] as String?,
       chains:
           (json['chains'] as List<dynamic>).map((e) => e as String).toList(),
       app: WalletAppLinks.fromJson(json['app'] as Map<String, dynamic>),
@@ -33,8 +33,8 @@ Map<String, dynamic> _$WalletToJson(Wallet instance) => <String, dynamic>{
     };
 
 WalletLinks _$WalletLinksFromJson(Map<String, dynamic> json) => WalletLinks(
-      native: json['native'] as String,
-      universal: json['universal'] as String,
+      native: json['native'] as String?,
+      universal: json['universal'] as String?,
     );
 
 Map<String, dynamic> _$WalletLinksToJson(WalletLinks instance) =>
@@ -45,9 +45,9 @@ Map<String, dynamic> _$WalletLinksToJson(WalletLinks instance) =>
 
 WalletAppLinks _$WalletAppLinksFromJson(Map<String, dynamic> json) =>
     WalletAppLinks(
-      browser: json['browser'] as String,
-      ios: json['ios'] as String,
-      android: json['android'] as String,
+      browser: json['browser'] as String?,
+      ios: json['ios'] as String?,
+      android: json['android'] as String?,
     );
 
 Map<String, dynamic> _$WalletAppLinksToJson(WalletAppLinks instance) =>
@@ -59,7 +59,7 @@ Map<String, dynamic> _$WalletAppLinksToJson(WalletAppLinks instance) =>
 
 WalletMetadata _$WalletMetadataFromJson(Map<String, dynamic> json) =>
     WalletMetadata(
-      shortName: json['shortName'] as String,
+      shortName: json['shortName'] as String?,
     );
 
 Map<String, dynamic> _$WalletMetadataToJson(WalletMetadata instance) =>

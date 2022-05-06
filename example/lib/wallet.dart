@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:qrcode_modal_example/test_connector.dart';
+
+import 'test_connector.dart';
 
 enum TransactionState {
   idle,

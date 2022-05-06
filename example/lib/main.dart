@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:qrcode_modal_example/test_connector.dart';
-import 'package:qrcode_modal_example/wallet.dart';
 
+import 'test_connector.dart';
+import 'wallet.dart';
 import 'algorand_test_connector.dart';
 import 'ethereum_test_connector.dart';
 

@@ -13,18 +13,20 @@ class Utils {
     }) =>
         '$appLink/wc?uri=${Uri.encodeComponent(wcUri)}';
 
-    if (await canLaunch(wallet.mobile.universal)) {
+    if (wallet.mobile.universal != null &&
+        await canLaunch(wallet.mobile.universal!)) {
       await launch(
-        convertToWcLink(appLink: wallet.mobile.universal, wcUri: uri),
+        convertToWcLink(appLink: wallet.mobile.universal!, wcUri: uri),
         forceSafariVC: false,
         universalLinksOnly: true,
       );
-    } else if (await canLaunch(wallet.mobile.native)) {
+    } else if (wallet.mobile.native != null &&
+        await canLaunch(wallet.mobile.native!)) {
       await launch(
-        convertToWcLink(appLink: wallet.mobile.native, wcUri: uri),
+        convertToWcLink(appLink: wallet.mobile.native!, wcUri: uri),
       );
     } else {
-      await launch(wallet.app.ios);
+      if (wallet.app.ios != null) await launch(wallet.app.ios!);
     }
   }
 }
