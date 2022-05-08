@@ -94,9 +94,13 @@ class _WalletPageState extends State<WalletPage> {
                                   onPressed: () {
                                     copyAddressToClipboard();
                                     Future.delayed(
-                                        const Duration(seconds: 1),
-                                        () =>
-                                            launch(widget.connector.faucetUrl));
+                                      const Duration(seconds: 1),
+                                      () => launchUrl(
+                                        Uri.parse(
+                                          widget.connector.faucetUrl,
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: const Text('Faucet'),
                                 ),

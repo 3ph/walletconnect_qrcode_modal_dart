@@ -7,26 +7,25 @@ class Utils {
     required Wallet wallet,
     required String uri,
   }) async {
-    String convertToWcLink({
+    Uri convertToWcLink({
       required String appLink,
       required String wcUri,
     }) =>
-        '$appLink/wc?uri=${Uri.encodeComponent(wcUri)}';
+        Uri.parse('$appLink/wc?uri=${Uri.encodeComponent(wcUri)}');
 
     if (wallet.mobile.universal != null &&
-        await canLaunch(wallet.mobile.universal!)) {
-      await launch(
+        await canLaunchUrl(Uri.parse(wallet.mobile.universal!))) {
+      await launchUrl(
         convertToWcLink(appLink: wallet.mobile.universal!, wcUri: uri),
-        forceSafariVC: false,
-        universalLinksOnly: true,
+        mode: LaunchMode.externalApplication,
       );
     } else if (wallet.mobile.native != null &&
-        await canLaunch(wallet.mobile.native!)) {
-      await launch(
+        await canLaunchUrl(Uri.parse(wallet.mobile.native!))) {
+      await launchUrl(
         convertToWcLink(appLink: wallet.mobile.native!, wcUri: uri),
       );
     } else {
-      if (wallet.app.ios != null) await launch(wallet.app.ios!);
+      if (wallet.app.ios != null) await launchUrl(Uri.parse(wallet.app.ios!));
     }
   }
 }

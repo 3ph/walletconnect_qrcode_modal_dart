@@ -13,7 +13,7 @@ class ModalWalletAndroidPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: ElevatedButton(
-        onPressed: () => launch(uri),
+        onPressed: () => launchUrl(Uri.parse(uri)),
         child: const Text('Connect'),
       ),
     );

@@ -84,8 +84,7 @@ class AlgorandTestConnector implements TestConnector {
     }
 
     // Kill the session
-    // TODO: session is killed before transaction is finished
-    // _connector.killSession();
+    _connector.killSession();
 
     return null;
   }
