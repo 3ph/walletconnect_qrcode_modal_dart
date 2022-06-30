@@ -34,7 +34,7 @@ class Utils {
       await launchUrl(
         convertToWcLink(appLink: wallet.mobile.native!, wcUri: uri),
       );
-    } else if (await openableLink(wallet.mobile.native)) {
+    } else if (await openableLink(wallet.app.ios)) {
       await launchUrl(Uri.parse(wallet.app.ios!));
     }
   }
@@ -52,8 +52,6 @@ class Utils {
       await launchUrl(
         convertToWcLink(appLink: wallet.desktop.native!, wcUri: uri),
       );
-    } else if (linkHasContent(wallet.app.browser)) {
-      await launchUrl(Uri.parse(wallet.app.browser!));
     }
   }
 }
