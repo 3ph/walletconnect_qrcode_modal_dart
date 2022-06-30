@@ -21,17 +21,19 @@ class ModalWalletIOSPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: store.load(),
+      future: getIOSWallets(),
       builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
         if (walletData.hasData) {
           return Column(
             children: [
               const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.only(top: 16, bottom: 8),
                 child: Text(
                   'Choose your preferred wallet',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
+                    fontWeight: FontWeight.bold,
                     color: Colors.grey,
                   ),
                 ),
@@ -105,6 +107,25 @@ class ModalWalletIOSPage extends StatelessWidget {
             ),
           );
         }
+      },
+    );
+  }
+
+  Future<List<Wallet>> getIOSWallets() {
+    Future<bool> shouldShow(wallet) async =>
+        await Utils.openableLink(wallet.mobile.universal) ||
+        await Utils.openableLink(wallet.mobile.native) ||
+        await Utils.openableLink(wallet.app.ios);
+
+    return store.load().then(
+      (wallets) async {
+        final filter = <Wallet>[];
+        for (final wallet in wallets) {
+          if (await shouldShow(wallet)) {
+            filter.add(wallet);
+          }
+        }
+        return filter;
       },
     );
   }
