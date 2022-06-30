@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,7 @@ class WalletConnectQrCodeModal {
   Future<void> openWalletApp() async {
     if (_uri == null) return;
 
-    if (Platform.isIOS) {
+    if (Utils.isIOS()) {
       if (_wallet == null) return;
 
       await Utils.iosLaunch(wallet: _wallet!, uri: _uri!);
