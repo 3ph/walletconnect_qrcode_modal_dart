@@ -4,11 +4,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/wallet.dart';
 
 class Utils {
-  static bool isIOS() => defaultTargetPlatform == TargetPlatform.iOS;
+  static bool get isIOS => defaultTargetPlatform == TargetPlatform.iOS;
 
-  static bool isAndroid() => defaultTargetPlatform == TargetPlatform.android;
+  static bool get isAndroid => defaultTargetPlatform == TargetPlatform.android;
 
-  static bool isDesktop() => !isIOS() && !isAndroid();
+  static bool get isDesktop => !isIOS && !isAndroid;
 
   static bool linkHasContent(String? link) => link != null && link.isNotEmpty;
 

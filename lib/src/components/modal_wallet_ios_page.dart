@@ -21,7 +21,7 @@ class ModalWalletIOSPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getIOSWallets(),
+      future: iOSWallets(),
       builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
         if (walletData.hasData) {
           return Column(
@@ -111,7 +111,7 @@ class ModalWalletIOSPage extends StatelessWidget {
     );
   }
 
-  Future<List<Wallet>> getIOSWallets() {
+  Future<List<Wallet>> iOSWallets() {
     Future<bool> shouldShow(wallet) async =>
         await Utils.openableLink(wallet.mobile.universal) ||
         await Utils.openableLink(wallet.mobile.native) ||

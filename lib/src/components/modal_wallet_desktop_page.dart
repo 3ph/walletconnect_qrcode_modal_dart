@@ -21,7 +21,7 @@ class ModalWalletDesktopPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getDesktopWallets(),
+      future: desktopWallets(),
       builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
         if (walletData.hasData) {
           return Column(
@@ -111,7 +111,7 @@ class ModalWalletDesktopPage extends StatelessWidget {
     );
   }
 
-  Future<List<Wallet>> getDesktopWallets() {
+  Future<List<Wallet>> desktopWallets() {
     return store.load().then(
           (wallets) => wallets
               .where(

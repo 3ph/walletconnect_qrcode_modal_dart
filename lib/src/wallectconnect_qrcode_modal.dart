@@ -69,7 +69,7 @@ class WalletConnectQrCodeModal {
   Future<void> openWalletApp() async {
     if (_uri == null) return;
 
-    if (Utils.isIOS()) {
+    if (Utils.isIOS) {
       if (_wallet == null) return;
 
       await Utils.iosLaunch(wallet: _wallet!, uri: _uri!);

@@ -51,8 +51,12 @@ class _ModalMainPageState extends State<ModalMainPage> {
                     backgroundColor: Colors.grey.shade300,
                     padding: const EdgeInsets.all(4),
                     children: {
-                      0: Utils.isDesktop() ? qrSegment() : listSegment(),
-                      1: Utils.isDesktop() ? listSegment() : qrSegment(),
+                      0: Utils.isDesktop
+                          ? const QrSegment()
+                          : const ListSegment(),
+                      1: Utils.isDesktop
+                          ? const ListSegment()
+                          : const QrSegment(),
                     },
                   ),
                   Expanded(
@@ -70,14 +74,28 @@ class _ModalMainPageState extends State<ModalMainPage> {
       ),
     );
   }
+}
 
-  _Segment listSegment() => _Segment(
-        text: Utils.isDesktop() ? 'Desktop' : 'Mobile',
-      );
+class ListSegment extends StatelessWidget {
+  const ListSegment({Key? key}) : super(key: key);
 
-  _Segment qrSegment() => const _Segment(
-        text: 'QR Code',
-      );
+  @override
+  Widget build(BuildContext context) {
+    return _Segment(
+      text: Utils.isDesktop ? 'Desktop' : 'Mobile',
+    );
+  }
+}
+
+class QrSegment extends StatelessWidget {
+  const QrSegment({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const _Segment(
+      text: 'QR Code',
+    );
+  }
 }
 
 class _ModalContent extends StatelessWidget {
@@ -94,10 +112,10 @@ class _ModalContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (groupValue == (Utils.isDesktop() ? 1 : 0)) {
-      if (Utils.isIOS()) {
+    if (groupValue == (Utils.isDesktop ? 1 : 0)) {
+      if (Utils.isIOS) {
         return ModalWalletIOSPage(uri: uri, walletCallback: walletCallback);
-      } else if (Utils.isAndroid()) {
+      } else if (Utils.isAndroid) {
         return ModalWalletAndroidPage(uri: uri);
       } else {
         return ModalWalletDesktopPage(uri: uri, walletCallback: walletCallback);
