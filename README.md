@@ -47,12 +47,9 @@ final qrCodeModal = WalletConnectQrCodeModal(
 ```dart
 // Subscribe to events
 qrCodeModal.registerListeners(
-  // connected
-  (session) => print('Connected: $session'),
-  // session updated
-  (response) => print('Session updated: $response'),
-  // disconnected
-  () => print('Disconnected')
+  onConnect: (session) => print('Connected: $session'),
+  onSessionUpdate: (response) => print('Session updated: $response'),
+  onDisconnect: () => print('Disconnected'),
 );
 
 // Create QR code modal and connect to a wallet
