@@ -1,3 +1,7 @@
+## 0.0.4
+* Adds support for desktop and web.
+* Updates dependencies.
+
 ## 0.0.3
 * Fixes analyzer issues, updates `url_launcher` package.
 
