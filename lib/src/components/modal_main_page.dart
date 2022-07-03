@@ -1,14 +1,15 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/utils.dart';
 import 'modal_qrcode_page.dart';
 import 'modal_wallet_ios_page.dart';
 import 'modal_wallet_android_page.dart';
 
 import '../models/wallet.dart';
+import 'modal_wallet_desktop_page.dart';
 
 class ModalMainPage extends StatefulWidget {
   const ModalMainPage({
@@ -44,22 +45,18 @@ class _ModalMainPageState extends State<ModalMainPage> {
                 children: [
                   CupertinoSlidingSegmentedControl<int>(
                     groupValue: _groupValue,
-                    onValueChanged: (value) => _groupValue = value,
+                    onValueChanged: (value) => setState(() {
+                      _groupValue = value;
+                    }),
                     backgroundColor: Colors.grey.shade300,
                     padding: const EdgeInsets.all(4),
                     children: {
-                      0: _Segment(
-                        text: 'Mobile',
-                        onTap: () => setState(
-                          () => _groupValue = 0,
-                        ),
-                      ),
-                      1: _Segment(
-                        text: 'QR Code',
-                        onTap: () => setState(
-                          () => _groupValue = 1,
-                        ),
-                      ),
+                      0: Utils.isDesktop
+                          ? const QrSegment()
+                          : const ListSegment(),
+                      1: Utils.isDesktop
+                          ? const ListSegment()
+                          : const QrSegment(),
                     },
                   ),
                   Expanded(
@@ -79,6 +76,28 @@ class _ModalMainPageState extends State<ModalMainPage> {
   }
 }
 
+class ListSegment extends StatelessWidget {
+  const ListSegment({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _Segment(
+      text: Utils.isDesktop ? 'Desktop' : 'Mobile',
+    );
+  }
+}
+
+class QrSegment extends StatelessWidget {
+  const QrSegment({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const _Segment(
+      text: 'QR Code',
+    );
+  }
+}
+
 class _ModalContent extends StatelessWidget {
   const _ModalContent({
     required this.groupValue,
@@ -93,11 +112,13 @@ class _ModalContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (groupValue == 0) {
-      if (Platform.isIOS) {
+    if (groupValue == (Utils.isDesktop ? 1 : 0)) {
+      if (Utils.isIOS) {
         return ModalWalletIOSPage(uri: uri, walletCallback: walletCallback);
-      } else {
+      } else if (Utils.isAndroid) {
         return ModalWalletAndroidPage(uri: uri);
+      } else {
+        return ModalWalletDesktopPage(uri: uri, walletCallback: walletCallback);
       }
     }
     return ModalQrCodePage(uri: uri);

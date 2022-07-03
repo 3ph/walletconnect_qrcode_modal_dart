@@ -6,8 +6,8 @@ import '../models/wallet.dart';
 import '../store/wallet_store.dart';
 import '../utils/utils.dart';
 
-class ModalWalletIOSPage extends StatelessWidget {
-  const ModalWalletIOSPage({
+class ModalWalletDesktopPage extends StatelessWidget {
+  const ModalWalletDesktopPage({
     required this.uri,
     this.store = const WalletStore(),
     this.walletCallback,
@@ -21,7 +21,7 @@ class ModalWalletIOSPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: iOSWallets(),
+      future: desktopWallets(),
       builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
         if (walletData.hasData) {
           return Column(
@@ -49,7 +49,7 @@ class ModalWalletIOSPage extends StatelessWidget {
                         child: GestureDetector(
                           onTap: () async {
                             walletCallback?.call(wallet);
-                            Utils.iosLaunch(wallet: wallet, uri: uri);
+                            Utils.desktopLaunch(wallet: wallet, uri: uri);
                           },
                           child: Row(
                             children: [
@@ -111,22 +111,15 @@ class ModalWalletIOSPage extends StatelessWidget {
     );
   }
 
-  Future<List<Wallet>> iOSWallets() {
-    Future<bool> shouldShow(wallet) async =>
-        await Utils.openableLink(wallet.mobile.universal) ||
-        await Utils.openableLink(wallet.mobile.native) ||
-        await Utils.openableLink(wallet.app.ios);
-
+  Future<List<Wallet>> desktopWallets() {
     return store.load().then(
-      (wallets) async {
-        final filter = <Wallet>[];
-        for (final wallet in wallets) {
-          if (await shouldShow(wallet)) {
-            filter.add(wallet);
-          }
-        }
-        return filter;
-      },
-    );
+          (wallets) => wallets
+              .where(
+                (wallet) =>
+                    Utils.linkHasContent(wallet.desktop.universal) ||
+                    Utils.linkHasContent(wallet.desktop.native),
+              )
+              .toList(),
+        );
   }
 }
