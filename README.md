@@ -95,6 +95,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Credits
 
 - [Tom Friml](https://github.com/3ph)
+- [elliotsayes](https://github.com/elliotsayes)
 - [All Contributors](../../contributors)
 
 ## License
