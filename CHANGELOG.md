@@ -1,3 +1,6 @@
+## 0.0.5
+* Updates example up to support all platform
+
 ## 0.0.4
 * Adds support for desktop and web.
 * Updates dependencies.
