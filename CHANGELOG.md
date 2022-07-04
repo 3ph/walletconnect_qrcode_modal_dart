@@ -1,5 +1,5 @@
 ## 0.0.5
-* Updates example up to support all platform
+* Updates example up to support all platforms
 
 ## 0.0.4
 * Adds support for desktop and web.
