@@ -59,10 +59,9 @@ class ModalWalletIOSPage extends StatelessWidget {
                                     wallet.name,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .titleMedium
+                                        .titleLarge
                                         ?.copyWith(
-                                          fontSize: 18,
-                                          color: Colors.grey,
+                                          color: Colors.black,
                                         ),
                                   ),
                                 ),

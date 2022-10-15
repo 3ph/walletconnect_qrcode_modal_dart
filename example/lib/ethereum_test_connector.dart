@@ -106,7 +106,7 @@ class EthereumTestConnector implements TestConnector {
       final txBytes = await _ethereum.sendTransaction(credentials, transaction);
       return txBytes;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
     }
 
     // Kill the session
