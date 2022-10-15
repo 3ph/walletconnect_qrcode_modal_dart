@@ -21,21 +21,19 @@ class ModalWalletIOSPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: iOSWallets(),
+      future: iOSWallets,
       builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
         if (walletData.hasData) {
           return Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 16, bottom: 8),
+              Padding(
+                padding: const EdgeInsets.only(top: 16, bottom: 8),
                 child: Text(
                   'Choose your preferred wallet',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.grey,
+                      ),
                 ),
               ),
               Expanded(
@@ -59,10 +57,13 @@ class ModalWalletIOSPage extends StatelessWidget {
                                       const EdgeInsets.symmetric(vertical: 16),
                                   child: Text(
                                     wallet.name,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontSize: 18,
+                                          color: Colors.grey,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -111,7 +112,7 @@ class ModalWalletIOSPage extends StatelessWidget {
     );
   }
 
-  Future<List<Wallet>> iOSWallets() {
+  Future<List<Wallet>> get iOSWallets {
     Future<bool> shouldShow(wallet) async =>
         await Utils.openableLink(wallet.mobile.universal) ||
         await Utils.openableLink(wallet.mobile.native) ||
