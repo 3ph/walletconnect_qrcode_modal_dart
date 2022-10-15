@@ -1,6 +1,6 @@
 name: walletconnect_qrcode_modal_dart
 description: Provides UI for DApps to easily connect to a supported Wallet apps through open WalletConnect protocol.
-version: 0.0.5
+version: 0.0.6
 repository: https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart
 issue_tracker: https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart/issues
 

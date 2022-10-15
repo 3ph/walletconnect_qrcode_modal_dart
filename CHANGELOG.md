@@ -1,3 +1,6 @@
+## 0.0.6
+* Fixes styling
+
 ## 0.0.5
 * Updates example up to support all platforms
 
