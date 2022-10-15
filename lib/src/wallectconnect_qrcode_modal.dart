@@ -109,13 +109,14 @@ class WalletConnectQrCodeModal {
             onDisplayUri: (uri) async {
               _uri = uri;
               await showDialog(
-                  context: context,
-                  useSafeArea: true,
-                  barrierDismissible: true,
-                  builder: (context) => ModalMainPage(
-                        uri: uri,
-                        walletCallback: (wallet) => _wallet = wallet,
-                      ));
+                context: context,
+                useSafeArea: true,
+                barrierDismissible: true,
+                builder: (context) => ModalMainPage(
+                  uri: uri,
+                  walletCallback: (wallet) => _wallet = wallet,
+                ),
+              );
 
               isDismissed = true;
               if (!sessionCreated && !isError) {
