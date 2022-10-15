@@ -80,7 +80,7 @@ class AlgorandTestConnector implements TestConnector {
       );
       return txId;
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
     }
 
     // Kill the session

@@ -50,13 +50,13 @@ class _TestPageState extends State<TestPage> {
   void initState() {
     connector.registerListeners(
         // connected
-        (session) => print('Connected: $session'),
+        (session) => debugPrint('Connected: $session'),
         // session updated
-        (response) => print('Session updated: $response'),
+        (response) => debugPrint('Session updated: $response'),
         // disconnected
         () {
       setState(() => _state = ConnectionState.disconnected);
-      print('Disconnected');
+      debugPrint('Disconnected');
     });
     super.initState();
   }
@@ -146,7 +146,7 @@ class _TestPageState extends State<TestPage> {
 
   VoidCallback? _transactionStateToAction(BuildContext context,
       {required ConnectionState state}) {
-    print('State: ${_transactionStateToString(state: state)}');
+    debugPrint('State: ${_transactionStateToString(state: state)}');
     switch (state) {
       // Progress, action disabled
       case ConnectionState.connecting:
@@ -170,7 +170,7 @@ class _TestPageState extends State<TestPage> {
               setState(() => _state = ConnectionState.connectionCancelled);
             }
           } catch (e) {
-            print('WC exception occured: $e');
+            debugPrint('WC exception occured: $e');
             setState(() => _state = ConnectionState.connectionFailed);
           }
         };

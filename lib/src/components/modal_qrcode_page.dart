@@ -23,14 +23,12 @@ class _ModalQrCodePageState extends State<ModalQrCodePage> {
       padding: const EdgeInsets.only(top: 16),
       child: Column(
         children: [
-          const Text(
+          Text(
             'Scan QR code with a WalletConnect-compatible wallet',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-            ),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.grey,
+                ),
           ),
           Expanded(
             child: Padding(
@@ -41,10 +39,9 @@ class _ModalQrCodePageState extends State<ModalQrCodePage> {
           TextButton(
               child: Text(
                 _copiedToClipboard ? 'Copied' : 'Copy to clipboard',
-                style: const TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey,
+                    ),
               ),
               onPressed: _copiedToClipboard
                   ? null
