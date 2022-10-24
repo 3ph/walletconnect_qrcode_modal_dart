@@ -10,6 +10,13 @@ import 'models/wallet.dart';
 import 'utils/utils.dart';
 
 class WalletConnectQrCodeModal {
+  // PRIVATE
+  final WalletConnect _connector;
+
+  Wallet? _wallet;
+
+  String? _uri;
+
   factory WalletConnectQrCodeModal({
     WalletConnect? connector,
   }) {
@@ -17,6 +24,10 @@ class WalletConnectQrCodeModal {
 
     return WalletConnectQrCodeModal._internal(connector: connector);
   }
+
+  WalletConnectQrCodeModal._internal({
+    required WalletConnect connector,
+  }) : _connector = connector;
 
   WalletConnect get connector => _connector;
 
@@ -36,32 +47,9 @@ class WalletConnectQrCodeModal {
     return await _createSessionWithModal(context, chainId: chainId);
   }
 
-  /// Send custom request with [method], [params] and optional [topic].
-  Future<void> sendCustomRequest({
-    required String method,
-    required List<dynamic> params,
-    String? topic,
-  }) async =>
-      await _connector.sendCustomRequest(method: method, params: params);
-
   /// Kill the current session with [sessionError].
   Future<void> killSession({String? sessionError}) async =>
       await _connector.killSession(sessionError: sessionError);
-
-  /// Register callback listeners.
-  /// [onConnect] is triggered when session is connected.
-  /// [onSessionUpdate] is triggered when session is updated.
-  /// [onDisconnect] is triggered when session is disconnected.
-  void registerListeners({
-    OnConnectRequest? onConnect,
-    OnSessionUpdate? onSessionUpdate,
-    OnDisconnect? onDisconnect,
-  }) =>
-      _connector.registerListeners(
-        onConnect: onConnect,
-        onSessionUpdate: onSessionUpdate,
-        onDisconnect: onDisconnect,
-      );
 
   /// Try to open Wallet selected during session creation.
   /// For iOS will try to open previously selected Wallet
@@ -78,14 +66,28 @@ class WalletConnectQrCodeModal {
     }
   }
 
-  // PRIVATE
-  final WalletConnect _connector;
-  Wallet? _wallet;
-  String? _uri;
+  /// Register callback listeners.
+  /// [onConnect] is triggered when session is connected.
+  /// [onSessionUpdate] is triggered when session is updated.
+  /// [onDisconnect] is triggered when session is disconnected.
+  void registerListeners({
+    OnConnectRequest? onConnect,
+    OnSessionUpdate? onSessionUpdate,
+    OnDisconnect? onDisconnect,
+  }) =>
+      _connector.registerListeners(
+        onConnect: onConnect,
+        onSessionUpdate: onSessionUpdate,
+        onDisconnect: onDisconnect,
+      );
 
-  WalletConnectQrCodeModal._internal({
-    required WalletConnect connector,
-  }) : _connector = connector;
+  /// Send custom request with [method], [params] and optional [topic].
+  Future<void> sendCustomRequest({
+    required String method,
+    required List<dynamic> params,
+    String? topic,
+  }) async =>
+      await _connector.sendCustomRequest(method: method, params: params);
 
   Future<SessionStatus?> _createSessionWithModal(
     BuildContext context, {
@@ -150,4 +152,27 @@ class WalletConnectQrCodeModal {
 
     return completer.future;
   }
+
+  _zinit() {
+    WalletConnectStyle cc = WalletConnectStyle();
+    cc.backgroundColor = Colors.red;
+  }
+}
+
+class WalletConnectStyle {
+  static final WalletConnectStyle _walletConnectStyle =
+      WalletConnectStyle._internal();
+
+  Color? backgroundColor;
+  Color? textColor;
+  Color? secondaryTextColor;
+  Color? qrCodeColor;
+  Color? tabBackgroundColor;
+  Color? tabThumbColor;
+
+  factory WalletConnectStyle() {
+    return _walletConnectStyle;
+  }
+
+  WalletConnectStyle._internal();
 }

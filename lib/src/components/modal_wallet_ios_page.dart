@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:walletconnect_qrcode_modal_dart/walletconnect_qrcode_modal_dart.dart';
 
 import '../components/modal_main_page.dart';
 import '../models/wallet.dart';
@@ -7,6 +8,11 @@ import '../store/wallet_store.dart';
 import '../utils/utils.dart';
 
 class ModalWalletIOSPage extends StatelessWidget {
+  final String uri;
+
+  final WalletStore store;
+  final WalletCallback? walletCallback;
+
   const ModalWalletIOSPage({
     required this.uri,
     this.store = const WalletStore(),
@@ -14,12 +20,28 @@ class ModalWalletIOSPage extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final String uri;
-  final WalletStore store;
-  final WalletCallback? walletCallback;
+  Future<List<Wallet>> get iOSWallets {
+    Future<bool> shouldShow(wallet) async =>
+        await Utils.openableLink(wallet.mobile.universal) ||
+        await Utils.openableLink(wallet.mobile.native) ||
+        await Utils.openableLink(wallet.app.ios);
+
+    return store.load().then(
+      (wallets) async {
+        final filter = <Wallet>[];
+        for (final wallet in wallets) {
+          if (await shouldShow(wallet)) {
+            filter.add(wallet);
+          }
+        }
+        return filter;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    WalletConnectStyle style = WalletConnectStyle();
     return FutureBuilder(
       future: iOSWallets,
       builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
@@ -32,7 +54,7 @@ class ModalWalletIOSPage extends StatelessWidget {
                   'Choose your preferred wallet',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.grey,
+                        color: style.secondaryTextColor ?? Colors.grey,
                       ),
                 ),
               ),
@@ -61,7 +83,8 @@ class ModalWalletIOSPage extends StatelessWidget {
                                         .textTheme
                                         .titleLarge
                                         ?.copyWith(
-                                          color: Colors.black,
+                                          color:
+                                              style.textColor ?? Colors.black,
                                         ),
                                   ),
                                 ),
@@ -84,12 +107,13 @@ class ModalWalletIOSPage extends StatelessWidget {
                                   height: 30,
                                 ),
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   size: 20,
-                                  color: Colors.grey,
+                                  color:
+                                      style.secondaryTextColor ?? Colors.grey,
                                 ),
                               ),
                             ],
@@ -107,25 +131,6 @@ class ModalWalletIOSPage extends StatelessWidget {
             ),
           );
         }
-      },
-    );
-  }
-
-  Future<List<Wallet>> get iOSWallets {
-    Future<bool> shouldShow(wallet) async =>
-        await Utils.openableLink(wallet.mobile.universal) ||
-        await Utils.openableLink(wallet.mobile.native) ||
-        await Utils.openableLink(wallet.app.ios);
-
-    return store.load().then(
-      (wallets) async {
-        final filter = <Wallet>[];
-        for (final wallet in wallets) {
-          if (await shouldShow(wallet)) {
-            filter.add(wallet);
-          }
-        }
-        return filter;
       },
     );
   }

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:walletconnect_qrcode_modal_dart/walletconnect_qrcode_modal_dart.dart';
 
 class ModalQrCodePage extends StatefulWidget {
+  final String uri;
+
   const ModalQrCodePage({
     required this.uri,
     Key? key,
   }) : super(key: key);
-
-  final String uri;
 
   @override
   State<ModalQrCodePage> createState() => _ModalQrCodePageState();
@@ -19,6 +20,7 @@ class _ModalQrCodePageState extends State<ModalQrCodePage> {
 
   @override
   Widget build(BuildContext context) {
+    WalletConnectStyle style = WalletConnectStyle();
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Column(
@@ -27,20 +29,30 @@ class _ModalQrCodePageState extends State<ModalQrCodePage> {
             'Scan QR code with a WalletConnect-compatible wallet',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.grey,
+                  color: style.secondaryTextColor ?? Colors.grey,
                 ),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: QrImage(data: widget.uri),
+              child: QrImage(
+                data: widget.uri,
+                eyeStyle: QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
+                  color: style.qrCodeColor ?? Colors.black,
+                ),
+                dataModuleStyle: QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.square,
+                  color: style.qrCodeColor ?? Colors.black,
+                ),
+              ),
             ),
           ),
           TextButton(
               child: Text(
                 _copiedToClipboard ? 'Copied' : 'Copy to clipboard',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey,
+                      color: style.secondaryTextColor ?? Colors.grey,
                     ),
               ),
               onPressed: _copiedToClipboard

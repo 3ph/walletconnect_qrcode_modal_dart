@@ -28,6 +28,15 @@ Once installed, you can simply connect your application to a wallet.
 **Initiate connection - show QR code modal**
 
 ```dart
+
+WalletConnectStyle style = WalletConnectStyle();
+style.backgroundColor = Colors.white;
+style.textColor = Colors.black;
+style.qrCodeColor = Colors.black;
+style.secondaryTextColor = Colors.grey;
+style.tabBackgroundColor = Colors.white;
+style.tabThumbColor = Colors.white;
+
 // Create a connector
 final qrCodeModal = WalletConnectQrCodeModal(
    connector: WalletConnect(
