@@ -5,17 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
-import 'components/modal_main_page.dart';
+import 'modal_main_page.dart';
 import 'models/wallet.dart';
 import 'utils/utils.dart';
 
 class WalletConnectQrCodeModal {
   factory WalletConnectQrCodeModal({
     WalletConnect? connector,
+    QrCodeModalBuilder? modalBuilder,
   }) {
     connector = connector ?? WalletConnect();
 
-    return WalletConnectQrCodeModal._internal(connector: connector);
+    return WalletConnectQrCodeModal._internal(
+      connector: connector,
+      modalBuilder: modalBuilder,
+    );
   }
 
   WalletConnect get connector => _connector;
@@ -82,10 +86,13 @@ class WalletConnectQrCodeModal {
   final WalletConnect _connector;
   Wallet? _wallet;
   String? _uri;
+  QrCodeModalBuilder? _modalBuilder;
 
   WalletConnectQrCodeModal._internal({
     required WalletConnect connector,
-  }) : _connector = connector;
+    QrCodeModalBuilder? modalBuilder,
+  })  : _connector = connector,
+        _modalBuilder = modalBuilder;
 
   Future<SessionStatus?> _createSessionWithModal(
     BuildContext context, {
@@ -115,6 +122,7 @@ class WalletConnectQrCodeModal {
                 builder: (context) => ModalMainPage(
                   uri: uri,
                   walletCallback: (wallet) => _wallet = wallet,
+                  modalBuilder: _modalBuilder,
                 ),
               );
 
@@ -144,7 +152,7 @@ class WalletConnectQrCodeModal {
         completer.complete(session);
       }
     }).catchError((error) {
-      print(error);
+      debugPrint(error);
       completer.completeError(error);
     });
 

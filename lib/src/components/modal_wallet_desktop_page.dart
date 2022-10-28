@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../components/modal_main_page.dart';
+import '../modal_main_page.dart';
 import '../models/wallet.dart';
 import '../store/wallet_store.dart';
 import '../utils/utils.dart';

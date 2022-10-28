@@ -45,19 +45,23 @@ class WalletConnectEthereumCredentials extends CustomTransactionSender {
 class EthereumTestConnector implements TestConnector {
   EthereumTestConnector() {
     _connector = WalletConnectQrCodeModal(
-      connector: WalletConnect(
-        bridge: 'https://bridge.walletconnect.org',
-        clientMeta: const PeerMeta(
-          // <-- Meta data of your app appearing in the wallet when connecting
-          name: 'QRCodeModalExampleApp',
-          description: 'WalletConnect Developer App',
-          url: 'https://walletconnect.org',
-          icons: [
-            'https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media'
-          ],
+        connector: WalletConnect(
+          bridge: 'https://bridge.walletconnect.org',
+          clientMeta: const PeerMeta(
+            // <-- Meta data of your app appearing in the wallet when connecting
+            name: 'QRCodeModalExampleApp',
+            description: 'WalletConnect Developer App',
+            url: 'https://walletconnect.org',
+            icons: [
+              'https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media'
+            ],
+          ),
         ),
-      ),
-    );
+        modalBuilder: (context, uri, callback, defaultModalWidget) {
+          return defaultModalWidget.copyWith(
+            segmentedControlBackgroundColor: Colors.yellow,
+          );
+        });
 
     _provider = EthereumWalletConnectProvider(_connector.connector);
   }
