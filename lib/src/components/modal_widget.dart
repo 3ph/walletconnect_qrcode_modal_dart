@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:walletconnect_qrcode_modal_dart/src/components/modal_segment_thumb_widget.dart';
 
 import '/src/modal_main_page.dart';
 import '/src/utils/utils.dart';
@@ -10,6 +11,12 @@ import '/src/components/modal_wallet_ios_page.dart';
 import '/src/components/modal_wallet_android_page.dart';
 
 import '/src/components/modal_wallet_desktop_page.dart';
+
+typedef ModalSegmentThumbBuilder = Widget Function(
+  BuildContext,
+  String text,
+  ModalSegmentThumbWidget defaultModalSegmentThumbWidget,
+);
 
 class ModalWidget extends StatefulWidget {
   const ModalWidget({
@@ -20,6 +27,8 @@ class ModalWidget extends StatefulWidget {
     this.cardPadding,
     this.segmentedControlBackgroundColor,
     this.segmentedControlPadding,
+    this.qrSegmentThumbBuilder,
+    this.walletSegmentThumbBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -42,6 +51,12 @@ class ModalWidget extends StatefulWidget {
   final Color? segmentedControlBackgroundColor;
   final EdgeInsets? segmentedControlPadding;
 
+  /// Thumb builder for QR code segment
+  final ModalSegmentThumbBuilder? qrSegmentThumbBuilder;
+
+  /// Thumb builder for Wallet segment
+  final ModalSegmentThumbBuilder? walletSegmentThumbBuilder;
+
   @override
   State<ModalWidget> createState() => _ModalWidgetState();
 
@@ -51,6 +66,8 @@ class ModalWidget extends StatefulWidget {
     EdgeInsets? cardPadding,
     Color? segmentedControlBackgroundColor,
     EdgeInsets? segmentedControlPadding,
+    ModalSegmentThumbBuilder? qrSegmentThumbBuilder,
+    ModalSegmentThumbBuilder? walletSegmentThumbBuilder,
     Key? key,
   }) =>
       ModalWidget(
@@ -63,6 +80,10 @@ class ModalWidget extends StatefulWidget {
             this.segmentedControlBackgroundColor,
         segmentedControlPadding:
             segmentedControlPadding ?? this.segmentedControlPadding,
+        qrSegmentThumbBuilder:
+            qrSegmentThumbBuilder ?? this.qrSegmentThumbBuilder,
+        walletSegmentThumbBuilder:
+            walletSegmentThumbBuilder ?? this.walletSegmentThumbBuilder,
         key: this.key ?? key,
       );
 }
@@ -95,11 +116,19 @@ class _ModalWidgetState extends State<ModalWidget> {
                         const EdgeInsets.all(4),
                     children: {
                       0: Utils.isDesktop
-                          ? const _QrSegment()
-                          : const _ListSegment(),
+                          ? _QrSegment(
+                              thumbBuilder: widget.qrSegmentThumbBuilder,
+                            )
+                          : _ListSegment(
+                              thumbBuilder: widget.walletSegmentThumbBuilder,
+                            ),
                       1: Utils.isDesktop
-                          ? const _ListSegment()
-                          : const _QrSegment(),
+                          ? _ListSegment(
+                              thumbBuilder: widget.walletSegmentThumbBuilder,
+                            )
+                          : _QrSegment(
+                              thumbBuilder: widget.qrSegmentThumbBuilder,
+                            ),
                     },
                   ),
                   Expanded(
@@ -120,24 +149,44 @@ class _ModalWidgetState extends State<ModalWidget> {
 }
 
 class _ListSegment extends StatelessWidget {
-  const _ListSegment({Key? key}) : super(key: key);
+  const _ListSegment({
+    this.thumbBuilder,
+    Key? key,
+  }) : super(key: key);
+
+  final ModalSegmentThumbBuilder? thumbBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return _Segment(
-      text: Utils.isDesktop ? 'Desktop' : 'Mobile',
-    );
+    final text = Utils.isDesktop ? 'Desktop' : 'Mobile';
+    final defaultWidget = ModalSegmentThumbWidget(text: text);
+
+    if (thumbBuilder != null) {
+      return thumbBuilder!.call(context, text, defaultWidget);
+    }
+
+    return defaultWidget;
   }
 }
 
 class _QrSegment extends StatelessWidget {
-  const _QrSegment({Key? key}) : super(key: key);
+  const _QrSegment({
+    this.thumbBuilder,
+    Key? key,
+  }) : super(key: key);
+
+  final ModalSegmentThumbBuilder? thumbBuilder;
 
   @override
   Widget build(BuildContext context) {
-    return const _Segment(
-      text: 'QR Code',
-    );
+    const text = 'QR Code';
+    const defaultWidget = ModalSegmentThumbWidget(text: text);
+
+    if (thumbBuilder != null) {
+      return thumbBuilder!.call(context, text, defaultWidget);
+    }
+
+    return defaultWidget;
   }
 }
 
@@ -165,27 +214,5 @@ class _ModalContent extends StatelessWidget {
       }
     }
     return ModalQrCodeWidget(uri: uri);
-  }
-}
-
-class _Segment extends StatelessWidget {
-  const _Segment({
-    required this.text,
-  });
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 100,
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.black,
-            ),
-      ),
-    );
   }
 }
