@@ -4,33 +4,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:walletconnect_qrcode_modal_dart/src/components/modal_segment_thumb_widget.dart';
 
+import '../models/wallet.dart';
+import '../store/wallet_store.dart';
 import '/src/modal_main_page.dart';
 import '/src/utils/utils.dart';
 import '/src/components/modal_qrcode_widget.dart';
-import '/src/components/modal_wallet_ios_page.dart';
-import 'modal_wallet_android_widget.dart';
+import 'modal_wallet_list_widget.dart';
+import 'modal_wallet_button_widget.dart';
 
 import '/src/components/modal_wallet_desktop_page.dart';
 
 typedef ModalSegmentThumbBuilder = Widget Function(
   BuildContext context,
-
-  /// Thumb text
-  String text,
   ModalSegmentThumbWidget defaultSegmentThumbWidget,
 );
 
 typedef ModalWalletButtonBuilder = Widget Function(
   BuildContext context,
 
-  /// Button text
-  String text,
-
-  /// WC url
-  String url,
-
   /// Represents one click button on Android
   ModalWalletButtonWidget defaultWalletButtonWidget,
+);
+
+typedef ModalWalletListBuilder = Widget Function(
+  BuildContext context,
+
+  /// Represents one click button on iOS/desktop
+  ModalWalletListWidget defaultWalletListWidget,
 );
 
 class ModalWidget extends StatefulWidget {
@@ -45,6 +45,7 @@ class ModalWidget extends StatefulWidget {
     this.walletSegmentThumbBuilder,
     this.qrSegmentThumbBuilder,
     this.walletButtonBuilder,
+    this.walletListBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -76,6 +77,9 @@ class ModalWidget extends StatefulWidget {
   /// Modal content for Android
   final ModalWalletButtonBuilder? walletButtonBuilder;
 
+  /// Modal content for Android
+  final ModalWalletListBuilder? walletListBuilder;
+
   @override
   State<ModalWidget> createState() => _ModalWidgetState();
 
@@ -87,7 +91,8 @@ class ModalWidget extends StatefulWidget {
     EdgeInsets? segmentedControlPadding,
     ModalSegmentThumbBuilder? qrSegmentThumbBuilder,
     ModalSegmentThumbBuilder? walletSegmentThumbBuilder,
-    ModalWalletButtonBuilder? walletAndroidBuilder,
+    ModalWalletButtonBuilder? walletButtonBuilder,
+    ModalWalletListBuilder? walletListBuilder,
     Key? key,
   }) =>
       ModalWidget(
@@ -104,7 +109,8 @@ class ModalWidget extends StatefulWidget {
             qrSegmentThumbBuilder ?? this.qrSegmentThumbBuilder,
         walletSegmentThumbBuilder:
             walletSegmentThumbBuilder ?? this.walletSegmentThumbBuilder,
-        walletButtonBuilder: walletAndroidBuilder ?? this.walletButtonBuilder,
+        walletButtonBuilder: walletButtonBuilder ?? this.walletButtonBuilder,
+        walletListBuilder: walletListBuilder ?? this.walletListBuilder,
         key: key ?? this.key,
       );
 }
@@ -158,6 +164,7 @@ class _ModalWidgetState extends State<ModalWidget> {
                       walletCallback: widget.walletCallback,
                       uri: widget.uri,
                       walletButtonBuilder: widget.walletButtonBuilder,
+                      walletListBuilder: widget.walletListBuilder,
                     ),
                   ),
                 ],
@@ -184,7 +191,7 @@ class _ListSegment extends StatelessWidget {
     final defaultWidget = ModalSegmentThumbWidget(text: text);
 
     if (thumbBuilder != null) {
-      return thumbBuilder!.call(context, text, defaultWidget);
+      return thumbBuilder!.call(context, defaultWidget);
     }
 
     return defaultWidget;
@@ -205,7 +212,7 @@ class _QrSegment extends StatelessWidget {
     const defaultWidget = ModalSegmentThumbWidget(text: text);
 
     if (thumbBuilder != null) {
-      return thumbBuilder!.call(context, text, defaultWidget);
+      return thumbBuilder!.call(context, defaultWidget);
     }
 
     return defaultWidget;
@@ -218,6 +225,7 @@ class _ModalContent extends StatelessWidget {
     required this.uri,
     this.walletCallback,
     this.walletButtonBuilder,
+    this.walletListBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -225,19 +233,31 @@ class _ModalContent extends StatelessWidget {
   final String uri;
   final WalletCallback? walletCallback;
   final ModalWalletButtonBuilder? walletButtonBuilder;
+  final ModalWalletListBuilder? walletListBuilder;
 
   @override
   Widget build(BuildContext context) {
     if (groupValue == (Utils.isDesktop ? 1 : 0)) {
       if (Utils.isIOS) {
-        return ModalWalletIOSPage(uri: uri, walletCallback: walletCallback);
+        final defaultWidget = ModalWalletListWidget(
+          url: uri,
+          wallets: _iosWallets,
+          walletCallback: walletCallback,
+          onWalletTap: (wallet, url) => Utils.iosLaunch(
+            wallet: wallet,
+            uri: url,
+          ),
+        );
+        if (walletListBuilder != null) {
+          return walletListBuilder!.call(context, defaultWidget);
+        }
+
+        return defaultWidget;
       } else if (Utils.isAndroid) {
         final defaultWidget = ModalWalletButtonWidget(uri: uri);
         if (walletButtonBuilder != null) {
           return walletButtonBuilder!.call(
             context,
-            defaultWidget.text,
-            uri,
             defaultWidget,
           );
         }
@@ -247,5 +267,24 @@ class _ModalContent extends StatelessWidget {
       }
     }
     return ModalQrCodeWidget(uri: uri);
+  }
+
+  Future<List<Wallet>> get _iosWallets {
+    Future<bool> shouldShow(wallet) async =>
+        await Utils.openableLink(wallet.mobile.universal) ||
+        await Utils.openableLink(wallet.mobile.native) ||
+        await Utils.openableLink(wallet.app.ios);
+
+    return const WalletStore().load().then(
+      (wallets) async {
+        final filter = <Wallet>[];
+        for (final wallet in wallets) {
+          if (await shouldShow(wallet)) {
+            filter.add(wallet);
+          }
+        }
+        return filter;
+      },
+    );
   }
 }
