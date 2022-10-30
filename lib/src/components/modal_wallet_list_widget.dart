@@ -110,6 +110,8 @@ class ModalWalletListWidget extends StatelessWidget {
       ModalWalletListWidget(
         url: url,
         wallets: wallets,
+        walletCallback: walletCallback,
+        onWalletTap: onWalletTap,
         title: title,
         titlePadding: titlePadding ?? this.titlePadding,
         titleTextStyle: titleTextStyle ?? this.titleTextStyle,

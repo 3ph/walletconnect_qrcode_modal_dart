@@ -12,8 +12,6 @@ import '/src/components/modal_qrcode_widget.dart';
 import 'modal_wallet_list_widget.dart';
 import 'modal_wallet_button_widget.dart';
 
-import '/src/components/modal_wallet_desktop_page.dart';
-
 typedef ModalSegmentThumbBuilder = Widget Function(
   BuildContext context,
   ModalSegmentThumbWidget defaultSegmentThumbWidget,
@@ -29,8 +27,15 @@ typedef ModalWalletButtonBuilder = Widget Function(
 typedef ModalWalletListBuilder = Widget Function(
   BuildContext context,
 
-  /// Represents one click button on iOS/desktop
+  /// Represents selection list on iOS/desktop
   ModalWalletListWidget defaultWalletListWidget,
+);
+
+typedef ModalQrCodeBuilder = Widget Function(
+  BuildContext context,
+
+  /// Represents QR code
+  ModalQrCodeWidget defaultQrCodeWidget,
 );
 
 class ModalWidget extends StatefulWidget {
@@ -46,6 +51,7 @@ class ModalWidget extends StatefulWidget {
     this.qrSegmentThumbBuilder,
     this.walletButtonBuilder,
     this.walletListBuilder,
+    this.qrCodeBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -77,8 +83,11 @@ class ModalWidget extends StatefulWidget {
   /// Modal content for Android
   final ModalWalletButtonBuilder? walletButtonBuilder;
 
-  /// Modal content for Android
+  /// Modal content for iOS/desktop
   final ModalWalletListBuilder? walletListBuilder;
+
+  /// Modal content QR code
+  final ModalQrCodeBuilder? qrCodeBuilder;
 
   @override
   State<ModalWidget> createState() => _ModalWidgetState();
@@ -93,6 +102,7 @@ class ModalWidget extends StatefulWidget {
     ModalSegmentThumbBuilder? walletSegmentThumbBuilder,
     ModalWalletButtonBuilder? walletButtonBuilder,
     ModalWalletListBuilder? walletListBuilder,
+    ModalQrCodeBuilder? qrCodeBuilder,
     Key? key,
   }) =>
       ModalWidget(
@@ -111,6 +121,7 @@ class ModalWidget extends StatefulWidget {
             walletSegmentThumbBuilder ?? this.walletSegmentThumbBuilder,
         walletButtonBuilder: walletButtonBuilder ?? this.walletButtonBuilder,
         walletListBuilder: walletListBuilder ?? this.walletListBuilder,
+        qrCodeBuilder: qrCodeBuilder ?? this.qrCodeBuilder,
         key: key ?? this.key,
       );
 }
@@ -165,6 +176,7 @@ class _ModalWidgetState extends State<ModalWidget> {
                       uri: widget.uri,
                       walletButtonBuilder: widget.walletButtonBuilder,
                       walletListBuilder: widget.walletListBuilder,
+                      qrCodeBuilder: widget.qrCodeBuilder,
                     ),
                   ),
                 ],
@@ -226,6 +238,7 @@ class _ModalContent extends StatelessWidget {
     this.walletCallback,
     this.walletButtonBuilder,
     this.walletListBuilder,
+    this.qrCodeBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -234,6 +247,7 @@ class _ModalContent extends StatelessWidget {
   final WalletCallback? walletCallback;
   final ModalWalletButtonBuilder? walletButtonBuilder;
   final ModalWalletListBuilder? walletListBuilder;
+  final ModalQrCodeBuilder? qrCodeBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -263,10 +277,29 @@ class _ModalContent extends StatelessWidget {
         }
         return defaultWidget;
       } else {
-        return ModalWalletDesktopPage(uri: uri, walletCallback: walletCallback);
+        final defaultWidget = ModalWalletListWidget(
+          url: uri,
+          wallets: _desktopWallets,
+          walletCallback: walletCallback,
+          onWalletTap: (wallet, url) => Utils.desktopLaunch(
+            wallet: wallet,
+            uri: uri,
+          ),
+        );
+        if (walletListBuilder != null) {
+          return walletListBuilder!.call(context, defaultWidget);
+        }
+
+        return defaultWidget;
       }
     }
-    return ModalQrCodeWidget(uri: uri);
+
+    final qrCodeWidget = ModalQrCodeWidget(uri: uri);
+
+    if (qrCodeBuilder != null) {
+      return qrCodeBuilder!.call(context, qrCodeWidget);
+    }
+    return qrCodeWidget;
   }
 
   Future<List<Wallet>> get _iosWallets {
@@ -286,5 +319,17 @@ class _ModalContent extends StatelessWidget {
         return filter;
       },
     );
+  }
+
+  Future<List<Wallet>> get _desktopWallets {
+    return const WalletStore().load().then(
+          (wallets) => wallets
+              .where(
+                (wallet) =>
+                    Utils.linkHasContent(wallet.desktop.universal) ||
+                    Utils.linkHasContent(wallet.desktop.native),
+              )
+              .toList(),
+        );
   }
 }

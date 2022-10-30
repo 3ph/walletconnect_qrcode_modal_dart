@@ -74,9 +74,12 @@ class EthereumTestConnector implements TestConnector {
                 defaultWalletListWidget.copyWith(
               titleTextAlign: TextAlign.end,
               rowBuilder: (context, wallet, imageUrl, defaultListRowWidget) =>
-                  Container(
-                child: Text(wallet.name),
-                color: Colors.green,
+                  defaultListRowWidget.copyWith(imageHeight: 50),
+            ),
+            qrCodeBuilder: (context, defaultQrCodeWidget) =>
+                defaultQrCodeWidget.copyWith(
+              copyButtonStyle: TextButton.styleFrom(
+                backgroundColor: Colors.orange,
               ),
             ),
           );
