@@ -40,11 +40,13 @@ class ModalSegmentThumbWidget extends StatelessWidget {
     double? width,
     TextStyle? textStyle,
     TextAlign? textAlign,
+    Key? key,
   }) =>
       ModalSegmentThumbWidget(
         text: text,
         width: width ?? this.width,
         textStyle: textStyle ?? this.textStyle,
         textAlign: textAlign ?? this.textAlign,
+        key: key ?? this.key,
       );
 }

@@ -8,14 +8,27 @@ import '/src/modal_main_page.dart';
 import '/src/utils/utils.dart';
 import '/src/components/modal_qrcode_widget.dart';
 import '/src/components/modal_wallet_ios_page.dart';
-import '/src/components/modal_wallet_android_page.dart';
+import 'modal_wallet_android_widget.dart';
 
 import '/src/components/modal_wallet_desktop_page.dart';
 
 typedef ModalSegmentThumbBuilder = Widget Function(
-  BuildContext,
+  BuildContext context,
+
+  /// Thumb text
   String text,
-  ModalSegmentThumbWidget defaultModalSegmentThumbWidget,
+  ModalSegmentThumbWidget defaultSegmentThumbWidget,
+);
+
+typedef ModalWalletAndroidBuilder = Widget Function(
+  BuildContext context,
+
+  /// Button text
+  String text,
+
+  /// WC url
+  String url,
+  ModalWalletAndroidWidget defaultWalletAndroidWidget,
 );
 
 class ModalWidget extends StatefulWidget {
@@ -27,8 +40,9 @@ class ModalWidget extends StatefulWidget {
     this.cardPadding,
     this.segmentedControlBackgroundColor,
     this.segmentedControlPadding,
-    this.qrSegmentThumbBuilder,
     this.walletSegmentThumbBuilder,
+    this.qrSegmentThumbBuilder,
+    this.walletAndroidBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -57,6 +71,9 @@ class ModalWidget extends StatefulWidget {
   /// Thumb builder for Wallet segment
   final ModalSegmentThumbBuilder? walletSegmentThumbBuilder;
 
+  /// Modal content for Android
+  final ModalWalletAndroidBuilder? walletAndroidBuilder;
+
   @override
   State<ModalWidget> createState() => _ModalWidgetState();
 
@@ -68,6 +85,7 @@ class ModalWidget extends StatefulWidget {
     EdgeInsets? segmentedControlPadding,
     ModalSegmentThumbBuilder? qrSegmentThumbBuilder,
     ModalSegmentThumbBuilder? walletSegmentThumbBuilder,
+    ModalWalletAndroidBuilder? walletAndroidBuilder,
     Key? key,
   }) =>
       ModalWidget(
@@ -84,7 +102,8 @@ class ModalWidget extends StatefulWidget {
             qrSegmentThumbBuilder ?? this.qrSegmentThumbBuilder,
         walletSegmentThumbBuilder:
             walletSegmentThumbBuilder ?? this.walletSegmentThumbBuilder,
-        key: this.key ?? key,
+        walletAndroidBuilder: walletAndroidBuilder ?? this.walletAndroidBuilder,
+        key: key ?? this.key,
       );
 }
 
@@ -136,6 +155,7 @@ class _ModalWidgetState extends State<ModalWidget> {
                       groupValue: _groupValue!,
                       walletCallback: widget.walletCallback,
                       uri: widget.uri,
+                      walletAndroidBuilder: widget.walletAndroidBuilder,
                     ),
                   ),
                 ],
@@ -195,12 +215,14 @@ class _ModalContent extends StatelessWidget {
     required this.groupValue,
     required this.uri,
     this.walletCallback,
+    this.walletAndroidBuilder,
     Key? key,
   }) : super(key: key);
 
   final int groupValue;
   final String uri;
   final WalletCallback? walletCallback;
+  final ModalWalletAndroidBuilder? walletAndroidBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +230,16 @@ class _ModalContent extends StatelessWidget {
       if (Utils.isIOS) {
         return ModalWalletIOSPage(uri: uri, walletCallback: walletCallback);
       } else if (Utils.isAndroid) {
-        return ModalWalletAndroidPage(uri: uri);
+        final defaultWidget = ModalWalletAndroidWidget(uri: uri);
+        if (walletAndroidBuilder != null) {
+          return walletAndroidBuilder!.call(
+            context,
+            defaultWidget.text,
+            uri,
+            defaultWidget,
+          );
+        }
+        return defaultWidget;
       } else {
         return ModalWalletDesktopPage(uri: uri, walletCallback: walletCallback);
       }

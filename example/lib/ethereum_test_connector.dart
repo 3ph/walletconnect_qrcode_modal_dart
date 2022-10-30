@@ -65,6 +65,14 @@ class EthereumTestConnector implements TestConnector {
               return defaultModalSegmentThumbWidget.copyWith(
                   textAlign: TextAlign.right);
             },
+            walletAndroidBuilder:
+                (context, text, url, defaultWalletAndroidWidget) =>
+                    defaultWalletAndroidWidget.copyWith(
+              textStyle: Theme.of(context)
+                  .textTheme
+                  .button
+                  ?.copyWith(color: Colors.yellow),
+            ),
           );
         });
 
