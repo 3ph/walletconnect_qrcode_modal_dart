@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ModalWalletAndroidWidget extends StatelessWidget {
-  const ModalWalletAndroidWidget({
+class ModalWalletButtonWidget extends StatelessWidget {
+  const ModalWalletButtonWidget({
     required this.uri,
     this.text = 'Connect',
     this.buttonStyle,
@@ -32,13 +32,13 @@ class ModalWalletAndroidWidget extends StatelessWidget {
     );
   }
 
-  ModalWalletAndroidWidget copyWith({
+  ModalWalletButtonWidget copyWith({
     ButtonStyle? buttonStyle,
     TextStyle? textStyle,
     TextAlign? textAlign,
     Key? key,
   }) =>
-      ModalWalletAndroidWidget(
+      ModalWalletButtonWidget(
         uri: uri,
         text: text,
         buttonStyle: buttonStyle,
