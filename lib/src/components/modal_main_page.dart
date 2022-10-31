@@ -34,7 +34,7 @@ class _ModalMainPageState extends State<ModalMainPage> {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
+        width: min(MediaQuery.of(context).size.width * 0.9, 600),
         height: max(500, MediaQuery.of(context).size.height * 0.5),
         child: Card(
           child: Padding(
