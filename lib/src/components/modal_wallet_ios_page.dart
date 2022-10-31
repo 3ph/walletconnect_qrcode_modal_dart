@@ -32,7 +32,7 @@ class ModalWalletIOSPage extends StatelessWidget {
                   'Choose your preferred wallet',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.grey,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                 ),
               ),
@@ -61,7 +61,9 @@ class ModalWalletIOSPage extends StatelessWidget {
                                         .textTheme
                                         .titleLarge
                                         ?.copyWith(
-                                          color: Colors.black,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onBackground,
                                         ),
                                   ),
                                 ),
@@ -72,7 +74,10 @@ class ModalWalletIOSPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .shadow
+                                          .withOpacity(0.3),
                                       blurRadius: 5,
                                       spreadRadius: 2,
                                     ),
@@ -84,12 +89,14 @@ class ModalWalletIOSPage extends StatelessWidget {
                                   height: 30,
                                 ),
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(left: 8),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   size: 20,
-                                  color: Colors.grey,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
                                 ),
                               ),
                             ],
@@ -101,9 +108,9 @@ class ModalWalletIOSPage extends StatelessWidget {
             ],
           );
         } else {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(
-              color: Colors.grey,
+              color: Theme.of(context).colorScheme.onBackground,
             ),
           );
         }

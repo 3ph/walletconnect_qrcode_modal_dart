@@ -48,7 +48,9 @@ class _ModalMainPageState extends State<ModalMainPage> {
                     onValueChanged: (value) => setState(() {
                       _groupValue = value;
                     }),
-                    backgroundColor: Colors.grey.shade300,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.secondaryContainer,
+                    thumbColor: Theme.of(context).colorScheme.primaryContainer,
                     padding: const EdgeInsets.all(4),
                     children: {
                       0: Utils.isDesktop
@@ -145,7 +147,7 @@ class _Segment extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
               ),
         ),
       ),

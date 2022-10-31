@@ -27,20 +27,23 @@ class _ModalQrCodePageState extends State<ModalQrCodePage> {
             'Scan QR code with a WalletConnect-compatible wallet',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: QrImage(data: widget.uri),
+              child: QrImage(
+                data: widget.uri,
+                foregroundColor: Theme.of(context).colorScheme.onBackground,
+              ),
             ),
           ),
           TextButton(
               child: Text(
                 _copiedToClipboard ? 'Copied' : 'Copy to clipboard',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey,
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
               ),
               onPressed: _copiedToClipboard
