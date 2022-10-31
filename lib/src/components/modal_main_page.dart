@@ -130,6 +130,7 @@ class _ModalContent extends StatelessWidget {
 class _Segment extends StatelessWidget {
   const _Segment({
     required this.text,
+    // ignore: unused_element
     this.onTap,
     Key? key,
   }) : super(key: key);

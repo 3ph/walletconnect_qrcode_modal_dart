@@ -144,7 +144,7 @@ class WalletConnectQrCodeModal {
         completer.complete(session);
       }
     }).catchError((error) {
-      print(error);
+      debugPrint(error);
       completer.completeError(error);
     });
 
