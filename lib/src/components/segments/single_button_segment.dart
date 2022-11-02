@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ModalWalletAndroidPage extends StatelessWidget {
-  const ModalWalletAndroidPage({
+import 'segments.dart';
+
+class SingleButtonSegment extends Segment {
+  const SingleButtonSegment({
     required this.uri,
+    String title = "",
     Key? key,
-  }) : super(key: key);
+  })  : _title = title,
+        super(key: key);
 
   final String uri;
+  final String _title;
 
   @override
   Widget build(BuildContext context) {
@@ -18,4 +23,7 @@ class ModalWalletAndroidPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  String title() => _title;
 }

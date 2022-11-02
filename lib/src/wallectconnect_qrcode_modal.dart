@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
-import 'components/modal_main_page.dart';
+import 'components/components.dart';
 import 'models/wallet.dart';
 import 'utils/utils.dart';
 
@@ -112,10 +112,21 @@ class WalletConnectQrCodeModal {
                 context: context,
                 useSafeArea: true,
                 barrierDismissible: true,
-                builder: (context) => ModalMainPage(
-                  uri: uri,
-                  walletCallback: (wallet) => _wallet = wallet,
-                ),
+                builder: (context) {
+                  if (Utils.isAndroid) {
+                    return QrModalAndroid(uri: uri);
+                  }
+                  if (Utils.isIOS) {
+                    return QrModalIOS(
+                      uri: uri,
+                      walletCallback: (wallet) => _wallet = wallet,
+                    );
+                  }
+                  return QrModalDesktop(
+                    uri: uri,
+                    walletCallback: (wallet) => _wallet = wallet,
+                  );
+                },
               );
 
               isDismissed = true;
@@ -128,7 +139,7 @@ class WalletConnectQrCodeModal {
         return session;
       } catch (e) {
         isError = true;
-        Navigator.of(context).pop();
+        context.navigator().pop();
         rethrow;
       }
     }

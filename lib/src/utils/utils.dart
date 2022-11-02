@@ -3,6 +3,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/wallet.dart';
 
+export 'extensions.dart';
+
+typedef WalletCallback = Function(Wallet);
+
 class Utils {
   static bool get isIOS => defaultTargetPlatform == TargetPlatform.iOS;
 
