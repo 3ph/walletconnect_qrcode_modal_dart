@@ -16,7 +16,10 @@ class QrModalAndroid extends StatelessWidget {
     return ModalBase(
       uri: uri,
       segments: [
-        SingleButtonSegment(uri: uri),
+        SingleButtonSegment(
+          uri: uri,
+          title: "Mobile",
+        ),
         QrCodeSegment(uri: uri),
       ],
     );
