@@ -5,22 +5,17 @@ import '../segments/segments.dart';
 
 class QrModalAndroid extends StatelessWidget {
   const QrModalAndroid({
-    required this.uri,
     Key? key,
   }) : super(key: key);
 
-  final String uri;
-
   @override
   Widget build(BuildContext context) {
-    return ModalBase(
-      uri: uri,
+    return const ModalBase(
       segments: [
         SingleButtonSegment(
-          uri: uri,
           title: "Mobile",
         ),
-        QrCodeSegment(uri: uri),
+        QrCodeSegment(),
       ],
     );
   }

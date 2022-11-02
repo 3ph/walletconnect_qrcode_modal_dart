@@ -4,20 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:walletconnect_qrcode_modal_dart/src/managers/managers.dart';
 
 import '../../utils/utils.dart';
 import 'segments.dart';
 
 class QrCodeSegment extends Segment {
   const QrCodeSegment({
-    required this.uri,
     Key? key,
   }) : super(key: key);
 
-  final String uri;
-
   @override
   Widget build(BuildContext context) {
+    final walletManager = WalletManager.instance;
     final isCopied = useState(false);
 
     return Padding(
@@ -35,7 +34,7 @@ class QrCodeSegment extends Segment {
             child: Padding(
               padding: const EdgeInsets.only(top: 8),
               child: QrImage(
-                data: uri,
+                data: walletManager.uri,
                 foregroundColor: context.theme().onBackground,
               ),
             ),
@@ -49,7 +48,7 @@ class QrCodeSegment extends Segment {
             onPressed: () async {
               await Clipboard.setData(
                 ClipboardData(
-                  text: uri,
+                  text: walletManager.uri,
                 ),
               );
               isCopied.value = true;
