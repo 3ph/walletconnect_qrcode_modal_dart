@@ -9,12 +9,10 @@ import '../segments/segments.dart';
 
 class ModalBase extends HookWidget {
   const ModalBase({
-    required this.uri,
     required this.segments,
     Key? key,
   }) : super(key: key);
 
-  final String uri;
   final List<Segment> segments;
 
   @override

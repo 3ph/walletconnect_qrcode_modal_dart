@@ -1,38 +1,35 @@
 import 'package:flutter/material.dart';
+import '../../managers/managers.dart';
 
 import '../../models/models.dart';
 import '../../store/store.dart';
 import '../../utils/utils.dart';
-import 'qr_modal.dart';
 import '../segments/segments.dart';
+import 'qr_modal.dart';
 
 class QrModalIOS extends StatelessWidget {
   const QrModalIOS({
-    required this.uri,
-    required this.walletCallback,
     this.store = const WalletStore(),
     Key? key,
   }) : super(key: key);
 
-  final String uri;
-  final WalletCallback walletCallback;
   final WalletStore store;
 
   @override
   Widget build(BuildContext context) {
+    final walletManager = WalletManager.instance;
+
     return ModalBase(
-      uri: uri,
       segments: [
         ListSegment(
-          uri: uri,
           wallets: iOSWallets,
-          onPressed: (wallet, uri) {
-            walletCallback.call(wallet);
-            Utils.iosLaunch(wallet: wallet, uri: uri);
+          onPressed: (wallet) {
+            walletManager.update(wallet: wallet);
+            Utils.iosLaunch(wallet: wallet, uri: walletManager.uri);
           },
           title: "Mobile",
         ),
-        QrCodeSegment(uri: uri),
+        const QrCodeSegment(),
       ],
     );
   }

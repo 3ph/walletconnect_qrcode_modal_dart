@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'components/components.dart';
-import 'models/wallet.dart';
 import 'utils/utils.dart';
+import 'managers/managers.dart';
 
 class WalletConnectQrCodeModal {
   factory WalletConnectQrCodeModal({
@@ -19,6 +18,7 @@ class WalletConnectQrCodeModal {
   }
 
   WalletConnect get connector => _connector;
+  final WalletManager _walletManager = WalletManager.instance;
 
   /// Connect to a new session.
   /// [context] is needed to show the QR code dialog.
@@ -45,8 +45,11 @@ class WalletConnectQrCodeModal {
       await _connector.sendCustomRequest(method: method, params: params);
 
   /// Kill the current session with [sessionError].
-  Future<void> killSession({String? sessionError}) async =>
-      await _connector.killSession(sessionError: sessionError);
+  Future<void> killSession({String? sessionError}) async {
+    await _connector.close();
+    await _connector.killSession(sessionError: sessionError);
+    _walletManager.clear();
+  }
 
   /// Register callback listeners.
   /// [onConnect] is triggered when session is connected.
@@ -63,25 +66,12 @@ class WalletConnectQrCodeModal {
         onDisconnect: onDisconnect,
       );
 
-  /// Try to open Wallet selected during session creation.
-  /// For iOS will try to open previously selected Wallet
-  /// For Android will open system dialog
-  Future<void> openWalletApp() async {
-    if (_uri == null) return;
-
-    if (Utils.isIOS) {
-      if (_wallet == null) return;
-
-      await Utils.iosLaunch(wallet: _wallet!, uri: _uri!);
-    } else {
-      await launchUrl(Uri.parse(_uri!));
-    }
-  }
-
   // PRIVATE
   final WalletConnect _connector;
-  Wallet? _wallet;
-  String? _uri;
+
+  Future<void> openWalletApp() async {
+    return await _walletManager.openWalletApp();
+  }
 
   WalletConnectQrCodeModal._internal({
     required WalletConnect connector,
@@ -95,9 +85,7 @@ class WalletConnectQrCodeModal {
     bool isError = false;
     bool sessionCreated = false;
 
-    // clear previous selected wallet data
-    _wallet = null;
-    _uri = null;
+    _walletManager.clear();
 
     final CancelableCompleter cancelableCompleter = CancelableCompleter();
     final Completer<SessionStatus?> completer = Completer();
@@ -107,25 +95,19 @@ class WalletConnectQrCodeModal {
         final session = await _connector.createSession(
             chainId: chainId,
             onDisplayUri: (uri) async {
-              _uri = uri;
+              _walletManager.update(uri: uri);
               await showDialog(
                 context: context,
                 useSafeArea: true,
                 barrierDismissible: true,
                 builder: (context) {
                   if (Utils.isAndroid) {
-                    return QrModalAndroid(uri: uri);
+                    return const QrModalAndroid();
                   }
                   if (Utils.isIOS) {
-                    return QrModalIOS(
-                      uri: uri,
-                      walletCallback: (wallet) => _wallet = wallet,
-                    );
+                    return const QrModalIOS();
                   }
-                  return QrModalDesktop(
-                    uri: uri,
-                    walletCallback: (wallet) => _wallet = wallet,
-                  );
+                  return const QrModalDesktop();
                 },
               );
 

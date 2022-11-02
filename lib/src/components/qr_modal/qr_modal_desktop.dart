@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:walletconnect_qrcode_modal_dart/src/managers/managers.dart';
 
 import '../../models/models.dart';
 import '../../store/store.dart';
@@ -8,28 +9,24 @@ import '../segments/segments.dart';
 
 class QrModalDesktop extends StatelessWidget {
   const QrModalDesktop({
-    required this.uri,
-    required this.walletCallback,
     this.store = const WalletStore(),
     Key? key,
   }) : super(key: key);
 
-  final String uri;
-  final WalletCallback walletCallback;
   final WalletStore store;
 
   @override
   Widget build(BuildContext context) {
+    final walletManager = WalletManager.instance;
+
     return ModalBase(
-      uri: uri,
       segments: [
-        QrCodeSegment(uri: uri),
+        const QrCodeSegment(),
         ListSegment(
-          uri: uri,
           wallets: desktopWallets(),
-          onPressed: (wallet, uri) {
-            walletCallback.call(wallet);
-            Utils.desktopLaunch(wallet: wallet, uri: uri);
+          onPressed: (wallet) {
+            walletManager.update(wallet: wallet);
+            Utils.desktopLaunch(wallet: wallet, uri: walletManager.uri);
           },
           title: "Desktop",
         ),
