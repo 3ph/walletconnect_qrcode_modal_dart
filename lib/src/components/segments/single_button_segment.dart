@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../utils/utils.dart';
 import 'segments.dart';
 
 class SingleButtonSegment extends Segment {
@@ -17,9 +18,11 @@ class SingleButtonSegment extends Segment {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ElevatedButton(
+      child: ElevatedButton.icon(
+        style: context.theme().primaryButton(),
         onPressed: () => launchUrl(Uri.parse(uri)),
-        child: const Text('Connect'),
+        label: const Text('Connect'),
+        icon: const Icon(Icons.open_in_browser),
       ),
     );
   }
