@@ -31,6 +31,7 @@ class QrModalDesktop extends StatelessWidget {
             walletCallback.call(wallet);
             Utils.desktopLaunch(wallet: wallet, uri: uri);
           },
+          title: "Desktop",
         ),
       ],
     );

@@ -30,6 +30,7 @@ class QrModalIOS extends StatelessWidget {
             walletCallback.call(wallet);
             Utils.iosLaunch(wallet: wallet, uri: uri);
           },
+          title: "Mobile",
         ),
         QrCodeSegment(uri: uri),
       ],
