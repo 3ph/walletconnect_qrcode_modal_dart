@@ -35,7 +35,8 @@ class ModalBase extends HookWidget {
                   CupertinoSlidingSegmentedControl<int>(
                     groupValue: _groupValue.value,
                     onValueChanged: (value) => _groupValue.value = value ?? 0,
-                    backgroundColor: context.theme().secondaryContainer,
+                    backgroundColor:
+                        context.theme().primaryContainer.darken(0.1),
                     thumbColor: context.theme().primaryContainer,
                     padding: const EdgeInsets.all(4),
                     children: segments
