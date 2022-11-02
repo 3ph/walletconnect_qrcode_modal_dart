@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:walletconnect_qrcode_modal_dart/src/managers/managers.dart';
+import '../../managers/managers.dart';
 
 import '../../models/models.dart';
 import '../../store/store.dart';

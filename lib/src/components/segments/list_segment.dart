@@ -7,7 +7,6 @@ import 'segments.dart';
 
 class ListSegment extends Segment {
   const ListSegment({
-    required this.uri,
     required this.wallets,
     required this.onPressed,
     String title = "",
@@ -15,10 +14,9 @@ class ListSegment extends Segment {
   })  : _title = title,
         super(key: key);
 
-  final String uri;
   final String _title;
   final Future<List<Wallet>> wallets;
-  final void Function(Wallet wallet, String uri) onPressed;
+  final void Function(Wallet wallet) onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +53,7 @@ class ListSegment extends Segment {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: GestureDetector(
-                  onTap: () => onPressed(wallet, uri),
+                  onTap: () => onPressed(wallet),
                   child: Row(
                     children: [
                       Expanded(
