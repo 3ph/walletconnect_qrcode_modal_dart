@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:walletconnect_qrcode_modal_dart/src/managers/managers.dart';
+import '../../managers/managers.dart';
 
 import '../../utils/utils.dart';
 import 'segments.dart';
