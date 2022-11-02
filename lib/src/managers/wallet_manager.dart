@@ -33,8 +33,8 @@ class WalletManager {
   }
 
   void update({Wallet? wallet, String? uri}) {
-    _wallet = wallet;
-    _uri = uri;
+    if (wallet != null) _wallet = wallet;
+    if (uri != null) _uri = uri;
   }
 
   void clear() {
