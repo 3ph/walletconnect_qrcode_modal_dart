@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../utils/utils.dart';
@@ -15,7 +18,7 @@ class QrCodeSegment extends Segment {
 
   @override
   Widget build(BuildContext context) {
-    final scaffoldMessenger = context.scaffoldMessenger();
+    final isCopied = useState(false);
 
     return Padding(
       padding: const EdgeInsets.only(top: 16),
@@ -40,24 +43,19 @@ class QrCodeSegment extends Segment {
           ElevatedButton.icon(
             style: context.theme().primaryButton(),
             label: Text(
-              "Copy",
-              style: context.textTheme().bodyMedium?.copyWith(
-                    color: context.theme().onBackground,
-                  ),
+              isCopied.value ? "Copied" : "Copy",
             ),
-            icon: const Icon(Icons.copy),
+            icon: Icon(isCopied.value ? Icons.check : Icons.copy),
             onPressed: () async {
               await Clipboard.setData(
                 ClipboardData(
                   text: uri,
                 ),
               );
-              scaffoldMessenger.showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    "Copied to Clipboard!",
-                  ),
-                ),
+              isCopied.value = true;
+              await Future.delayed(
+                const Duration(seconds: 2),
+                () => isCopied.value = false,
               );
             },
           ),
