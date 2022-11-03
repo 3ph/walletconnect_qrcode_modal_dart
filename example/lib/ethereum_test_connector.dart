@@ -57,6 +57,36 @@ class EthereumTestConnector implements TestConnector {
           ],
         ),
       ),
+
+      // UNCOMMENT below to make customizations, a few example customizations listed
+      // modalBuilder: (context, uri, callback, defaultModalWidget) {
+      //   return defaultModalWidget.copyWith(
+      //     cardColor: Colors.pink,
+      //     segmentedControlBackgroundColor: Colors.yellow,
+      //     qrSegmentThumbBuilder: (context, defaultModalSegmentThumbWidget) {
+      //       return defaultModalSegmentThumbWidget.copyWith(
+      //           textAlign: TextAlign.right);
+      //     },
+      //     walletButtonBuilder: (context, defaultWalletButtonWidget) =>
+      //         defaultWalletButtonWidget.copyWith(
+      //       buttonStyle: ElevatedButton.styleFrom(
+      //         backgroundColor: Colors.pink,
+      //       ),
+      //     ),
+      //     walletListBuilder: (context, defaultWalletListWidget) =>
+      //         defaultWalletListWidget.copyWith(
+      //       titleTextAlign: TextAlign.end,
+      //       rowBuilder: (context, wallet, imageUrl, defaultListRowWidget) =>
+      //           defaultListRowWidget.copyWith(imageHeight: 50),
+      //     ),
+      //     qrCodeBuilder: (context, defaultQrCodeWidget) =>
+      //         defaultQrCodeWidget.copyWith(
+      //       copyButtonStyle: TextButton.styleFrom(
+      //         backgroundColor: Colors.orange,
+      //       ),
+      //     ),
+      //   );
+      // },
     );
 
     _provider = EthereumWalletConnectProvider(_connector.connector);
