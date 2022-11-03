@@ -30,13 +30,25 @@ class ModalWalletListWidget extends StatelessWidget {
   final Future<List<Wallet>> wallets;
   final WalletCallback? walletCallback;
 
+  /// List title
   final String title;
+
+  /// List title padding
   final EdgeInsets? titlePadding;
+
+  /// List title text style
   final TextStyle? titleTextStyle;
+
+  /// List title text align
   final TextAlign? titleTextAlign;
 
+  /// Callback when row (wallet) it tapped
   final Function(Wallet wallet, String url)? onWalletTap;
+
+  /// Wallet row builder
   final ModalWalletListRowBuilder? rowBuilder;
+
+  /// Loading widget when list is being populated
   final Widget? loadingWidget;
 
   @override

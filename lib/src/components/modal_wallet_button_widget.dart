@@ -13,8 +13,14 @@ class ModalWalletButtonWidget extends StatelessWidget {
 
   final String uri;
   final String text;
+
+  /// Button style
   final ButtonStyle? buttonStyle;
+
+  /// Button text style
   final TextStyle? textStyle;
+
+  /// Button text align
   final TextAlign? textAlign;
 
   @override

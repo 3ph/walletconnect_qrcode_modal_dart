@@ -45,45 +45,49 @@ class WalletConnectEthereumCredentials extends CustomTransactionSender {
 class EthereumTestConnector implements TestConnector {
   EthereumTestConnector() {
     _connector = WalletConnectQrCodeModal(
-        connector: WalletConnect(
-          bridge: 'https://bridge.walletconnect.org',
-          clientMeta: const PeerMeta(
-            // <-- Meta data of your app appearing in the wallet when connecting
-            name: 'QRCodeModalExampleApp',
-            description: 'WalletConnect Developer App',
-            url: 'https://walletconnect.org',
-            icons: [
-              'https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media'
-            ],
-          ),
+      connector: WalletConnect(
+        bridge: 'https://bridge.walletconnect.org',
+        clientMeta: const PeerMeta(
+          // <-- Meta data of your app appearing in the wallet when connecting
+          name: 'QRCodeModalExampleApp',
+          description: 'WalletConnect Developer App',
+          url: 'https://walletconnect.org',
+          icons: [
+            'https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media'
+          ],
         ),
-        modalBuilder: (context, uri, callback, defaultModalWidget) {
-          return defaultModalWidget.copyWith(
-            segmentedControlBackgroundColor: Colors.yellow,
-            qrSegmentThumbBuilder: (context, defaultModalSegmentThumbWidget) {
-              return defaultModalSegmentThumbWidget.copyWith(
-                  textAlign: TextAlign.right);
-            },
-            walletButtonBuilder: (context, defaultWalletButtonWidget) =>
-                defaultWalletButtonWidget.copyWith(
-              buttonStyle: ElevatedButton.styleFrom(
-                backgroundColor: Colors.pink,
-              ),
-            ),
-            walletListBuilder: (context, defaultWalletListWidget) =>
-                defaultWalletListWidget.copyWith(
-              titleTextAlign: TextAlign.end,
-              rowBuilder: (context, wallet, imageUrl, defaultListRowWidget) =>
-                  defaultListRowWidget.copyWith(imageHeight: 50),
-            ),
-            qrCodeBuilder: (context, defaultQrCodeWidget) =>
-                defaultQrCodeWidget.copyWith(
-              copyButtonStyle: TextButton.styleFrom(
-                backgroundColor: Colors.orange,
-              ),
-            ),
-          );
-        });
+      ),
+
+      // UNCOMMENT below to make customizations, a few example customizations listed
+      // modalBuilder: (context, uri, callback, defaultModalWidget) {
+      //   return defaultModalWidget.copyWith(
+      //     cardColor: Colors.pink,
+      //     segmentedControlBackgroundColor: Colors.yellow,
+      //     qrSegmentThumbBuilder: (context, defaultModalSegmentThumbWidget) {
+      //       return defaultModalSegmentThumbWidget.copyWith(
+      //           textAlign: TextAlign.right);
+      //     },
+      //     walletButtonBuilder: (context, defaultWalletButtonWidget) =>
+      //         defaultWalletButtonWidget.copyWith(
+      //       buttonStyle: ElevatedButton.styleFrom(
+      //         backgroundColor: Colors.pink,
+      //       ),
+      //     ),
+      //     walletListBuilder: (context, defaultWalletListWidget) =>
+      //         defaultWalletListWidget.copyWith(
+      //       titleTextAlign: TextAlign.end,
+      //       rowBuilder: (context, wallet, imageUrl, defaultListRowWidget) =>
+      //           defaultListRowWidget.copyWith(imageHeight: 50),
+      //     ),
+      //     qrCodeBuilder: (context, defaultQrCodeWidget) =>
+      //         defaultQrCodeWidget.copyWith(
+      //       copyButtonStyle: TextButton.styleFrom(
+      //         backgroundColor: Colors.orange,
+      //       ),
+      //     ),
+      //   );
+      // },
+    );
 
     _provider = EthereumWalletConnectProvider(_connector.connector);
   }

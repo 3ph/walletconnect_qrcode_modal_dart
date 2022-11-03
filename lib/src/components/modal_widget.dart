@@ -44,6 +44,7 @@ class ModalWidget extends StatefulWidget {
     this.walletCallback,
     this.width,
     this.height,
+    this.cardColor,
     this.cardPadding,
     this.segmentedControlBackgroundColor,
     this.segmentedControlPadding,
@@ -66,6 +67,9 @@ class ModalWidget extends StatefulWidget {
 
   /// Width of the modal
   final double? height;
+
+  /// Content card color
+  final Color? cardColor;
 
   /// Content card padding
   final EdgeInsets? cardPadding;
@@ -96,6 +100,7 @@ class ModalWidget extends StatefulWidget {
     double? width,
     double? height,
     EdgeInsets? cardPadding,
+    Color? cardColor,
     Color? segmentedControlBackgroundColor,
     EdgeInsets? segmentedControlPadding,
     ModalSegmentThumbBuilder? qrSegmentThumbBuilder,
@@ -111,6 +116,7 @@ class ModalWidget extends StatefulWidget {
         width: width ?? this.width,
         height: height ?? this.height,
         cardPadding: cardPadding ?? this.cardPadding,
+        cardColor: cardColor ?? this.cardColor,
         segmentedControlBackgroundColor: segmentedControlBackgroundColor ??
             this.segmentedControlBackgroundColor,
         segmentedControlPadding:
@@ -137,6 +143,7 @@ class _ModalWidgetState extends State<ModalWidget> {
         height:
             widget.height ?? max(500, MediaQuery.of(context).size.height * 0.5),
         child: Card(
+          color: widget.cardColor,
           child: Padding(
             padding: widget.cardPadding ?? const EdgeInsets.all(8),
             child: DefaultTabController(
