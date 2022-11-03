@@ -19,7 +19,6 @@ class WalletConnectQrCodeModal {
     LaunchWalletPageBuilder? launchWalletPageBuilder,
     WalletListSettings? walletListSettings,
     WalletListPageBuilder? walletListPageBuilder,
-    WalletListItemBuilder? walletListItemBuilder,
   }) {
     connector = connector ?? WalletConnect();
     SettingsManager.instance.update(
@@ -32,7 +31,6 @@ class WalletConnectQrCodeModal {
       qrPageBuilder: qrPageBuilder,
       launchWalletPageBuilder: launchWalletPageBuilder,
       walletListPageBuilder: walletListPageBuilder,
-      walletListItemBuilder: walletListItemBuilder,
     );
 
     return WalletConnectQrCodeModal._internal(

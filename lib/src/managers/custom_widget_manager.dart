@@ -20,16 +20,7 @@ typedef LaunchWalletPageBuilder = Widget Function(
 typedef WalletListPageBuilder = Widget Function(
   BuildContext context,
   WalletListSettings walletListSettings,
-  int itemCount,
-  Widget Function(BuildContext context, int index) buildItem,
-);
-
-typedef WalletListItemBuilder = Widget Function(
-  BuildContext context,
-  WalletListSettings settings,
-  int index,
-  Wallet wallet,
-  String imageUrl,
+  List<Wallet> wallets,
 );
 
 class CustomWidgetManager {
@@ -50,18 +41,13 @@ class CustomWidgetManager {
   WalletListPageBuilder? _walletListPageBuilder;
   WalletListPageBuilder? get walletListPageBuilder => _walletListPageBuilder;
 
-  WalletListItemBuilder? _walletListItemBuilder;
-  WalletListItemBuilder? get walletListItemBuilder => _walletListItemBuilder;
-
   update({
     QrPageBuilder? qrPageBuilder,
     LaunchWalletPageBuilder? launchWalletPageBuilder,
     WalletListPageBuilder? walletListPageBuilder,
-    WalletListItemBuilder? walletListItemBuilder,
   }) {
     _qrPageBuilder = qrPageBuilder;
     _launchWalletPageBuilder = launchWalletPageBuilder;
     _walletListPageBuilder = walletListPageBuilder;
-    _walletListItemBuilder = walletListItemBuilder;
   }
 }

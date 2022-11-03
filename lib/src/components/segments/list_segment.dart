@@ -26,64 +26,6 @@ class ListSegment extends Segment {
     final widgetManager = CustomWidgetManager.instance;
     final walletData = useFuture(wallets);
 
-    itemBuilder(context, index) {
-      final wallet = walletData.data![index];
-      final imageUrl =
-          'https://registry.walletconnect.org/logo/sm/${walletData.data![index]}.jpeg';
-      return widgetManager.walletListItemBuilder?.call(
-            context,
-            settings,
-            index,
-            wallet,
-            imageUrl,
-          ) ??
-          Padding(
-            padding: settings.listPadding,
-            child: GestureDetector(
-              onTap: () => onPressed(wallet),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: settings.itemPadding,
-                      child: Text(
-                        wallet.name,
-                        style: settings.itemTextStyle,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: settings.itemImageShadowColor ??
-                              context.theme().shadow.withOpacity(0.3),
-                          blurRadius: settings.itemImageShadowBlurRadius,
-                          spreadRadius: settings.itemImageShadowBlurRadius,
-                        ),
-                      ],
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      height: settings.itemImageSize,
-                    ),
-                  ),
-                  Padding(
-                    padding: settings.itemIconPadding,
-                    child: Icon(
-                      settings.itemIconData,
-                      size: settings.itemIconSize,
-                      color: settings.itemIconColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-    }
-
     if (!walletData.hasData) {
       return Center(
         child: CircularProgressIndicator(
@@ -95,8 +37,7 @@ class ListSegment extends Segment {
     return widgetManager.walletListPageBuilder?.call(
           context,
           settings,
-          walletData.data!.length,
-          itemBuilder,
+          walletData.data!,
         ) ??
         Column(
           children: [
@@ -110,9 +51,61 @@ class ListSegment extends Segment {
             ),
             Expanded(
               child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: walletData.data!.length,
-                  itemBuilder: itemBuilder),
+                shrinkWrap: true,
+                itemCount: walletData.data!.length,
+                itemBuilder: (context, index) {
+                  final wallet = walletData.data![index];
+                  final imageUrl =
+                      'https://registry.walletconnect.org/logo/sm/${walletData.data![index]}.jpeg';
+                  return Padding(
+                    padding: settings.listPadding,
+                    child: GestureDetector(
+                      onTap: () => onPressed(wallet),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: settings.itemPadding,
+                              child: Text(
+                                wallet.name,
+                                style: settings.itemTextStyle,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: settings.itemImageShadowColor ??
+                                      context.theme().shadow.withOpacity(0.3),
+                                  blurRadius:
+                                      settings.itemImageShadowBlurRadius,
+                                  spreadRadius:
+                                      settings.itemImageShadowBlurRadius,
+                                ),
+                              ],
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              height: settings.itemImageSize,
+                            ),
+                          ),
+                          Padding(
+                            padding: settings.itemIconPadding,
+                            child: Icon(
+                              settings.itemIconData,
+                              size: settings.itemIconSize,
+                              color: settings.itemIconColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         );
