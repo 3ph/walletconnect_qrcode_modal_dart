@@ -22,6 +22,8 @@ class ListSegment extends Segment {
 
   @override
   Widget build(BuildContext context) {
+    return const Center();
+
     final settings = SettingsManager.instance.walletListSettings;
     final walletData = useFuture(wallets);
 
