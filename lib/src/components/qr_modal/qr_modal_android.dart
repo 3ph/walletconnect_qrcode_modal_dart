@@ -12,7 +12,7 @@ class QrModalAndroid extends StatelessWidget {
   Widget build(BuildContext context) {
     return const ModalBase(
       segments: [
-        SingleButtonSegment(
+        LaunchWalletSegment(
           title: "Mobile",
         ),
         QrCodeSegment(),

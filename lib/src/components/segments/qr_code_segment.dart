@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../../managers/managers.dart';
 
-import '../../utils/utils.dart';
+import '../../managers/managers.dart';
 import 'segments.dart';
 
 class QrCodeSegment extends Segment {
@@ -15,50 +14,61 @@ class QrCodeSegment extends Segment {
   @override
   Widget build(BuildContext context) {
     final walletManager = WalletManager.instance;
+    final settings = SettingsManager.instance.qrCodeSettings;
     final isCopied = useState(false);
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: Column(
-        children: [
-          Text(
-            'Scan QR code with a WalletConnect-compatible wallet',
-            textAlign: TextAlign.center,
-            style: context.textTheme().titleMedium?.copyWith(
-                  color: context.theme().onBackground,
-                ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: QrImage(
-                data: walletManager.uri,
-                foregroundColor: context.theme().onBackground,
+    final onPressed = isCopied.value
+        ? null
+        : () async {
+            await Clipboard.setData(
+              ClipboardData(
+                text: walletManager.uri,
               ),
-            ),
-          ),
-          ElevatedButton.icon(
-            style: context.theme().primaryButton(),
-            label: Text(
-              isCopied.value ? "Copied" : "Copy",
-            ),
-            icon: Icon(isCopied.value ? Icons.check : Icons.copy),
-            onPressed: () async {
-              await Clipboard.setData(
-                ClipboardData(
-                  text: walletManager.uri,
+            );
+            isCopied.value = true;
+            await Future.delayed(
+              const Duration(seconds: 2),
+              () => isCopied.value = false,
+            );
+          };
+
+    return CustomWidgetManager.instance.qrPageBuilder?.call(
+          context,
+          settings,
+          onPressed,
+          isCopied.value,
+          walletManager.uri,
+        ) ??
+        Padding(
+          padding: settings.padding,
+          child: Column(
+            children: [
+              Text(
+                settings.title,
+                textAlign: settings.titleTextAlign,
+                style: settings.titleTextStyle,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: settings.qrCodePadding,
+                  child: QrImage(
+                    data: walletManager.uri,
+                    foregroundColor: settings.qrCodeColor,
+                  ),
                 ),
-              );
-              isCopied.value = true;
-              await Future.delayed(
-                const Duration(seconds: 2),
-                () => isCopied.value = false,
-              );
-            },
+              ),
+              ElevatedButton.icon(
+                style: settings.copyButtonStyle,
+                label: Text(
+                  isCopied.value ? settings.copiedText : settings.copyText,
+                ),
+                icon: Icon(
+                  isCopied.value ? settings.copiedIcon : settings.copyIcon,
+                ),
+                onPressed: onPressed,
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
   }
 
   @override

@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../managers/managers.dart';
 import '../../models/models.dart';
+import '../../utils/utils.dart';
 import 'segments.dart';
 
 class ListSegment extends Segment {
@@ -20,92 +22,100 @@ class ListSegment extends Segment {
 
   @override
   Widget build(BuildContext context) {
+    final settings = SettingsManager.instance.walletListSettings;
+    final widgetManager = CustomWidgetManager.instance;
     final walletData = useFuture(wallets);
+
+    itemBuilder(context, index) {
+      final wallet = walletData.data![index];
+      final imageUrl =
+          'https://registry.walletconnect.org/logo/sm/${walletData.data![index]}.jpeg';
+      return widgetManager.walletListItemBuilder?.call(
+            context,
+            settings,
+            index,
+            wallet,
+            imageUrl,
+          ) ??
+          Padding(
+            padding: settings.listPadding,
+            child: GestureDetector(
+              onTap: () => onPressed(wallet),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: settings.itemPadding,
+                      child: Text(
+                        wallet.name,
+                        style: settings.itemTextStyle,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: settings.itemImageShadowColor ??
+                              context.theme().shadow.withOpacity(0.3),
+                          blurRadius: settings.itemImageShadowBlurRadius,
+                          spreadRadius: settings.itemImageShadowBlurRadius,
+                        ),
+                      ],
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
+                      height: settings.itemImageSize,
+                    ),
+                  ),
+                  Padding(
+                    padding: settings.itemIconPadding,
+                    child: Icon(
+                      settings.itemIconData,
+                      size: settings.itemIconSize,
+                      color: settings.itemIconColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+    }
 
     if (!walletData.hasData) {
       return Center(
         child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.onBackground,
+          color: context.theme().onBackground,
         ),
       );
     }
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 16, bottom: 8),
-          child: Text(
-            'Choose your preferred wallet',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onBackground,
+    return widgetManager.walletListPageBuilder?.call(
+          context,
+          settings,
+          walletData.data!.length,
+          itemBuilder,
+        ) ??
+        Column(
+          children: [
+            Padding(
+              padding: settings.titlePadding,
+              child: Text(
+                settings.title,
+                textAlign: settings.titleTextAlign,
+                style: settings.titleTextStyle,
+              ),
             ),
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: walletData.data!.length,
-            itemBuilder: (context, index) {
-              final wallet = walletData.data![index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: GestureDetector(
-                  onTap: () => onPressed(wallet),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Text(
-                            wallet.name,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .shadow
-                                  .withOpacity(0.3),
-                              blurRadius: 5,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              'https://registry.walletconnect.org/logo/sm/${wallet.id}.jpeg',
-                          height: 30,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20,
-                          color: Theme.of(context).colorScheme.onBackground,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: walletData.data!.length,
+                  itemBuilder: itemBuilder),
+            ),
+          ],
+        );
   }
 
   @override

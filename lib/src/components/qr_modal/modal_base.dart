@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../managers/managers.dart';
 import '../../utils/utils.dart';
 import '../segments/segments.dart';
 
@@ -17,36 +16,37 @@ class ModalBase extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _groupValue = useState(0);
+    final settings = SettingsManager.instance.modalSettings;
+    final groupValue = useState(0);
 
     return Center(
       child: SizedBox(
-        width: min(context.width() * 0.9, 600),
-        height: max(context.height() * 0.5, 500),
+        width: settings.width,
+        height: settings.height,
         child: Card(
+          color: settings.cardColor,
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: settings.cardPadding,
             child: DefaultTabController(
               length: 2,
               child: Column(
                 children: [
                   CupertinoSlidingSegmentedControl<int>(
-                    groupValue: _groupValue.value,
-                    onValueChanged: (value) => _groupValue.value = value ?? 0,
-                    backgroundColor:
+                    groupValue: groupValue.value,
+                    onValueChanged: (value) => groupValue.value = value ?? 0,
+                    backgroundColor: settings.tabBackgroundColor ??
                         context.theme().primaryContainer.darken(0.1),
-                    thumbColor: context.theme().primaryContainer,
-                    padding: const EdgeInsets.all(4),
+                    thumbColor:
+                        settings.thumbColor ?? context.theme().primaryContainer,
+                    padding: settings.tabPadding,
                     children: segments
                         .map(
                           (e) => SizedBox(
-                            width: 100,
+                            width: settings.thumbWidth,
                             child: Text(
                               e.title(),
-                              textAlign: TextAlign.center,
-                              style: context.textTheme().titleMedium?.copyWith(
-                                    color: context.theme().onPrimaryContainer,
-                                  ),
+                              textAlign: settings.thumbTextAlign,
+                              style: settings.thumbTextStyle,
                             ),
                           ),
                         )
@@ -54,7 +54,7 @@ class ModalBase extends HookWidget {
                         .asMap(),
                   ),
                   Expanded(
-                    child: segments[_groupValue.value],
+                    child: segments[groupValue.value],
                   ),
                 ],
               ),

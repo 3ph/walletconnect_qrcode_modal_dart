@@ -5,21 +5,38 @@ import 'package:flutter/material.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'components/components.dart';
-import 'modal_main_page.dart';
-import 'models/wallet.dart';
+import 'settings/settings.dart';
 import 'utils/utils.dart';
 import 'managers/managers.dart';
 
 class WalletConnectQrCodeModal {
   factory WalletConnectQrCodeModal({
     WalletConnect? connector,
-    QrCodeModalBuilder? modalBuilder,
+    ModalSettings? modalSettings,
+    QrCodeSettings? qrCodeSettings,
+    QrPageBuilder? qrPageBuilder,
+    LaunchWalletSettings? launchWalletSettings,
+    LaunchWalletPageBuilder? launchWalletPageBuilder,
+    WalletListSettings? walletListSettings,
+    WalletListPageBuilder? walletListPageBuilder,
+    WalletListItemBuilder? walletListItemBuilder,
   }) {
     connector = connector ?? WalletConnect();
+    SettingsManager.instance.update(
+      qrCodeSettings: qrCodeSettings,
+      modalSettings: modalSettings,
+      launchWalletSettings: launchWalletSettings,
+      walletListSettings: walletListSettings,
+    );
+    CustomWidgetManager.instance.update(
+      qrPageBuilder: qrPageBuilder,
+      launchWalletPageBuilder: launchWalletPageBuilder,
+      walletListPageBuilder: walletListPageBuilder,
+      walletListItemBuilder: walletListItemBuilder,
+    );
 
     return WalletConnectQrCodeModal._internal(
       connector: connector,
-      modalBuilder: modalBuilder,
     );
   }
 
@@ -74,6 +91,7 @@ class WalletConnectQrCodeModal {
 
   // PRIVATE
   final WalletConnect _connector;
+  SettingsManager get settingsManager => SettingsManager.instance;
 
   Future<void> openWalletApp() async {
     return await _walletManager.openWalletApp();
@@ -81,9 +99,7 @@ class WalletConnectQrCodeModal {
 
   WalletConnectQrCodeModal._internal({
     required WalletConnect connector,
-    QrCodeModalBuilder? modalBuilder,
-  })  : _connector = connector,
-        _modalBuilder = modalBuilder;
+  }) : _connector = connector;
 
   Future<SessionStatus?> _createSessionWithModal(
     BuildContext context, {
@@ -93,6 +109,7 @@ class WalletConnectQrCodeModal {
     bool isError = false;
     bool sessionCreated = false;
 
+    SettingsManager.instance.init(context);
     _walletManager.clear();
 
     final CancelableCompleter cancelableCompleter = CancelableCompleter();

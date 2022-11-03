@@ -566,7 +566,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.1.0"
   web3dart:
     dependency: "direct main"
     description:
