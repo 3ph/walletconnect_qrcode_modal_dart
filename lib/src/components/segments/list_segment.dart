@@ -22,6 +22,7 @@ class ListSegment extends Segment {
 
   @override
   Widget build(BuildContext context) {
+    final scrollController = useScrollController();
     final settings = SettingsManager.instance.walletListSettings;
 
     if (wallets.isEmpty) {
@@ -49,6 +50,7 @@ class ListSegment extends Segment {
             ),
             Expanded(
               child: ListView.builder(
+                controller: scrollController,
                 shrinkWrap: true,
                 itemCount: wallets.length,
                 itemBuilder: (context, index) {
