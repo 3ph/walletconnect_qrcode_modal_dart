@@ -97,14 +97,6 @@ class _ModalQrCodeWidget extends State<ModalQrCodeWidget> {
           ),
           TextButton(
             style: widget.copyButtonStyle,
-            child: Text(
-              _copiedToClipboard ? widget.copiedText : widget.copyText,
-              style: widget.copyButtonTextStyle ??
-                  Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey,
-                      ),
-              textAlign: widget.copyButtonTextAlign,
-            ),
             onPressed: _copiedToClipboard
                 ? null
                 : () async {
@@ -113,6 +105,14 @@ class _ModalQrCodeWidget extends State<ModalQrCodeWidget> {
                     await Future.delayed(const Duration(seconds: 1),
                         () => setState(() => _copiedToClipboard = false));
                   },
+            child: Text(
+              _copiedToClipboard ? widget.copiedText : widget.copyText,
+              style: widget.copyButtonTextStyle ??
+                  Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey,
+                      ),
+              textAlign: widget.copyButtonTextAlign,
+            ),
           ),
         ],
       ),
