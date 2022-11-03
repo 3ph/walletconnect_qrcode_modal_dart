@@ -58,32 +58,30 @@ class EthereumTestConnector implements TestConnector {
         ),
       ),
 
-      // UNCOMMENT below to make customizations, a few example customizations listed
-      // modalBuilder: (context, uri, callback, defaultModalWidget) {
-      //   return defaultModalWidget.copyWith(
-      //     cardColor: Colors.pink,
-      //     segmentedControlBackgroundColor: Colors.yellow,
-      //     qrSegmentThumbBuilder: (context, defaultModalSegmentThumbWidget) {
-      //       return defaultModalSegmentThumbWidget.copyWith(
-      //           textAlign: TextAlign.right);
-      //     },
-      //     walletButtonBuilder: (context, defaultWalletButtonWidget) =>
-      //         defaultWalletButtonWidget.copyWith(
-      //       buttonStyle: ElevatedButton.styleFrom(
-      //         backgroundColor: Colors.pink,
-      //       ),
+      // UNCOMMENT below to make customizations, this is a not functing customization!
+      // modalSettings: ModalSettings(cardColor: Colors.green),
+      // launchWalletSettings: LaunchWalletSettings(connectIcon: Icons.abc),
+      // launchWalletPageBuilder: (context, launchWalletSettings, launchWallet) {
+      //   return const Center(
+      //     child: Text(
+      //       "Launch Wallet",
       //     ),
-      //     walletListBuilder: (context, defaultWalletListWidget) =>
-      //         defaultWalletListWidget.copyWith(
-      //       titleTextAlign: TextAlign.end,
-      //       rowBuilder: (context, wallet, imageUrl, defaultListRowWidget) =>
-      //           defaultListRowWidget.copyWith(imageHeight: 50),
+      //   );
+      // },
+      // qrCodeSettings: QrCodeSettings(copyText: "Copy Me!"),
+      // qrPageBuilder: (context, qrCodeSettings, copyToClipboard, isCopied, uri) {
+      //   return Center(
+      //     child: Text(
+      //       qrCodeSettings.copyText,
       //     ),
-      //     qrCodeBuilder: (context, defaultQrCodeWidget) =>
-      //         defaultQrCodeWidget.copyWith(
-      //       copyButtonStyle: TextButton.styleFrom(
-      //         backgroundColor: Colors.orange,
-      //       ),
+      //   );
+      // },
+      // walletListSettings: WalletListSettings(itemIconColor: Colors.red),
+      // walletListPageBuilder: (context, walletListSettings, wallets) {
+      //   return Center(
+      //     child: Icon(
+      //       walletListSettings.itemIconData,
+      //       color: walletListSettings.itemIconColor,
       //     ),
       //   );
       // },

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import '../../managers/managers.dart';
 
+import '../../managers/managers.dart';
 import '../../models/models.dart';
 import '../../store/store.dart';
 import '../../utils/utils.dart';
-import 'qr_modal.dart';
 import '../segments/segments.dart';
+import 'qr_modal.dart';
 
 class QrModalDesktop extends HookWidget {
   const QrModalDesktop({

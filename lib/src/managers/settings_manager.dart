@@ -10,53 +10,52 @@ class SettingsManager {
     return _instance!;
   }
 
-  late final GlobalKey key;
+  late final BuildContext context;
 
   bool _isInitialised = false;
   bool get isInitialised => _isInitialised;
 
-  void init(GlobalKey key) {
+  void init(BuildContext context) {
     if (_isInitialised) {
       return;
     }
-    this.key = key;
+    this.context = context;
     _isInitialised = true;
   }
 
   QrCodeSettings? _qrCodeSettings;
   QrCodeSettings get qrCodeSettings {
-    if (!_isInitialised || key.currentContext == null) {
+    if (!_isInitialised) {
       throw "Not initialised";
     }
-    _qrCodeSettings ??= QrCodeSettings.fromContext(key.currentContext!);
+    _qrCodeSettings ??= QrCodeSettings.fromContext(context);
     return _qrCodeSettings!;
   }
 
   ModalSettings? _modalSettings;
   ModalSettings get modalSettings {
-    if (!_isInitialised || key.currentContext == null) {
+    if (!_isInitialised) {
       throw "Not initialised";
     }
-    _modalSettings ??= ModalSettings.fromContext(key.currentContext!);
+    _modalSettings ??= ModalSettings.fromContext(context);
     return _modalSettings!;
   }
 
   LaunchWalletSettings? _launchWalletSettings;
   LaunchWalletSettings get launchWalletSettings {
-    if (!_isInitialised || key.currentContext == null) {
+    if (!_isInitialised) {
       throw "Not initialised";
     }
-    _launchWalletSettings ??=
-        LaunchWalletSettings.fromContext(key.currentContext!);
+    _launchWalletSettings ??= LaunchWalletSettings.fromContext(context);
     return _launchWalletSettings!;
   }
 
   WalletListSettings? _walletListSettings;
   WalletListSettings get walletListSettings {
-    if (!_isInitialised || key.currentContext == null) {
+    if (!_isInitialised) {
       throw "Not initialised";
     }
-    _walletListSettings ??= WalletListSettings.fromContext(key.currentContext!);
+    _walletListSettings ??= WalletListSettings.fromContext(context);
     return _walletListSettings!;
   }
 

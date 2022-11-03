@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'components/components.dart';
+import 'managers/managers.dart';
 import 'settings/settings.dart';
 import 'utils/utils.dart';
-import 'managers/managers.dart';
 
 class WalletConnectQrCodeModal {
   factory WalletConnectQrCodeModal({
-    required GlobalKey key,
     WalletConnect? connector,
     ModalSettings? modalSettings,
     QrCodeSettings? qrCodeSettings,
@@ -22,7 +21,6 @@ class WalletConnectQrCodeModal {
     WalletListPageBuilder? walletListPageBuilder,
   }) {
     connector = connector ?? WalletConnect();
-    SettingsManager.instance.init(key);
     SettingsManager.instance.update(
       qrCodeSettings: qrCodeSettings,
       modalSettings: modalSettings,
@@ -45,7 +43,8 @@ class WalletConnectQrCodeModal {
 
   /// Connect to a new session.
   /// [context] is needed to show the QR code dialog.
-  Future<SessionStatus?> connect({
+  Future<SessionStatus?> connect(
+    BuildContext context, {
     int? chainId,
   }) async {
     if (_connector.connected) {
@@ -54,6 +53,7 @@ class WalletConnectQrCodeModal {
         accounts: _connector.session.accounts,
       );
     }
+    settingsManager.init(context);
 
     return await _createSessionWithModal(chainId: chainId);
   }
@@ -119,7 +119,7 @@ class WalletConnectQrCodeModal {
             onDisplayUri: (uri) async {
               _walletManager.update(uri: uri);
               await showDialog(
-                context: settingsManager.key.currentContext!,
+                context: settingsManager.context,
                 useSafeArea: true,
                 barrierDismissible: true,
                 builder: (context) {
@@ -143,7 +143,7 @@ class WalletConnectQrCodeModal {
         return session;
       } catch (e) {
         isError = true;
-        settingsManager.key.currentContext!.navigator().pop();
+        settingsManager.context.navigator().pop();
         rethrow;
       }
     }
@@ -153,7 +153,7 @@ class WalletConnectQrCodeModal {
     cancelableCompleter.operation.value.then((session) {
       sessionCreated = true;
       if (!isDismissed) {
-        settingsManager.key.currentContext!.navigator().pop();
+        settingsManager.context.navigator().pop();
       }
       if (!completer.isCompleted) {
         completer.complete(session);
