@@ -1,6 +1,7 @@
-<p align="center">
-<img src="https://github.com/Orange-Wallet/orangewallet-utils/raw/master/assets/images/walletconnect.png">
-</p>
+<div align="center">
+<img src="https://github.com/Orange-Wallet/orangewallet-utils/raw/master/assets/images/walletconnect.png" alt="Wallet Connect Logo" width="70"/>
+<h1>Wallet Connect</h1>
+</div>
 
 [![pub.dev][pub-dev-shield]][pub-dev-url]
 [![Effective Dart][effective-dart-shield]][effective-dart-url]
