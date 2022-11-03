@@ -17,17 +17,14 @@ class ListSegment extends Segment {
         super(key: key);
 
   final String _title;
-  final Future<List<Wallet>> wallets;
+  final List<Wallet> wallets;
   final void Function(Wallet wallet) onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return const Center();
-
     final settings = SettingsManager.instance.walletListSettings;
-    final walletData = useFuture(wallets);
 
-    if (!walletData.hasData) {
+    if (wallets.isEmpty) {
       return Center(
         child: CircularProgressIndicator(
           color: settings.loadingColor,
@@ -35,78 +32,81 @@ class ListSegment extends Segment {
       );
     }
 
-    return CustomWidgetManager.instance.walletListPageBuilder
-            ?.call(context, settings, walletData.data!) ??
-        const Center();
-
-    // return Column(
-    //   children: [
-    //     Padding(
-    //       padding: settings.titlePadding,
-    //       child: Text(
-    //         settings.title,
-    //         textAlign: settings.titleTextAlign,
-    //         style: settings.titleTextStyle,
-    //       ),
-    //     ),
-    //     Expanded(
-    //       child: ListView.builder(
-    //         shrinkWrap: true,
-    //         itemCount: walletData.data!.length,
-    //         itemBuilder: (context, index) {
-    //           final wallet = walletData.data![index];
-    //           final imageUrl =
-    //               'https://registry.walletconnect.org/logo/sm/${walletData.data![index]}.jpeg';
-    //           return Padding(
-    //             padding: settings.listPadding,
-    //             child: GestureDetector(
-    //               onTap: () => onPressed(wallet),
-    //               child: Row(
-    //                 children: [
-    //                   Expanded(
-    //                     child: Padding(
-    //                       padding: settings.itemPadding,
-    //                       child: Text(
-    //                         wallet.name,
-    //                         style: settings.itemTextStyle,
-    //                       ),
-    //                     ),
-    //                   ),
-    //                   Container(
-    //                     clipBehavior: Clip.hardEdge,
-    //                     decoration: BoxDecoration(
-    //                       borderRadius: BorderRadius.circular(8),
-    //                       boxShadow: [
-    //                         BoxShadow(
-    //                           color: settings.itemImageShadowColor ??
-    //                               context.theme().shadow.withOpacity(0.3),
-    //                           blurRadius: settings.itemImageShadowBlurRadius,
-    //                           spreadRadius: settings.itemImageShadowBlurRadius,
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     child: CachedNetworkImage(
-    //                       imageUrl: imageUrl,
-    //                       height: settings.itemImageSize,
-    //                     ),
-    //                   ),
-    //                   Padding(
-    //                     padding: settings.itemIconPadding,
-    //                     child: Icon(
-    //                       settings.itemIconData,
-    //                       size: settings.itemIconSize,
-    //                       color: settings.itemIconColor,
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //           );
-    //         },
-    //       ),
-    //     ),
-    //   ],
-    // );
+    return CustomWidgetManager.instance.walletListPageBuilder?.call(
+          context,
+          settings,
+          wallets,
+        ) ??
+        Column(
+          children: [
+            Padding(
+              padding: settings.titlePadding,
+              child: Text(
+                settings.title,
+                textAlign: settings.titleTextAlign,
+                style: settings.titleTextStyle,
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: wallets.length,
+                itemBuilder: (context, index) {
+                  final wallet = wallets[index];
+                  final imageUrl =
+                      'https://registry.walletconnect.org/logo/sm/${wallets[index]}.jpeg';
+                  return Padding(
+                    padding: settings.listPadding,
+                    child: GestureDetector(
+                      onTap: () => onPressed(wallet),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: settings.itemPadding,
+                              child: Text(
+                                wallet.name,
+                                style: settings.itemTextStyle,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: settings.itemImageShadowColor ??
+                                      context.theme().shadow.withOpacity(0.3),
+                                  blurRadius:
+                                      settings.itemImageShadowBlurRadius,
+                                  spreadRadius:
+                                      settings.itemImageShadowBlurRadius,
+                                ),
+                              ],
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              height: settings.itemImageSize,
+                            ),
+                          ),
+                          Padding(
+                            padding: settings.itemIconPadding,
+                            child: Icon(
+                              settings.itemIconData,
+                              size: settings.itemIconSize,
+                              color: settings.itemIconColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
   }
 
   @override

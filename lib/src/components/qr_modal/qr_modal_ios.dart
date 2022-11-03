@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../managers/managers.dart';
 
 import '../../models/models.dart';
@@ -7,7 +8,7 @@ import '../../utils/utils.dart';
 import '../segments/segments.dart';
 import 'qr_modal.dart';
 
-class QrModalIOS extends StatelessWidget {
+class QrModalIOS extends HookWidget {
   const QrModalIOS({
     this.store = const WalletStore(),
     Key? key,
@@ -18,11 +19,12 @@ class QrModalIOS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final walletManager = WalletManager.instance;
+    final wallets = useFuture(iOSWallets());
 
     return ModalBase(
       segments: [
         ListSegment(
-          wallets: iOSWallets,
+          wallets: wallets.data ?? [],
           onPressed: (wallet) {
             walletManager.update(wallet: wallet);
             Utils.iosLaunch(wallet: wallet, uri: walletManager.uri);
@@ -34,7 +36,7 @@ class QrModalIOS extends StatelessWidget {
     );
   }
 
-  Future<List<Wallet>> get iOSWallets {
+  Future<List<Wallet>> iOSWallets() {
     Future<bool> shouldShow(wallet) async =>
         await Utils.openableLink(wallet.mobile.universal) ||
         await Utils.openableLink(wallet.mobile.native) ||
