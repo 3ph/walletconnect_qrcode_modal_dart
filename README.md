@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://eidoohelp.zendesk.com/hc/article_attachments/360071262952/mceclip0.png">
+<img src="https://github.com/Orange-Wallet/orangewallet-utils/raw/master/assets/images/walletconnect.png">
 </p>
 
 [![pub.dev][pub-dev-shield]][pub-dev-url]
@@ -101,7 +101,7 @@ WalletConnectQrCodeModal(
       cardColor: Colors.pink,
     );
   });
-`jk``
+```
 
 You could also return your custom widget in the builder rather than the `defaultModalWidget` if the level of customization is not sufficient. All the necessary data to build your own widget are either passed in through the builder arguments or can be obtained from the `default...Widget`.
 
