@@ -11,6 +11,7 @@ import 'managers/managers.dart';
 
 class WalletConnectQrCodeModal {
   factory WalletConnectQrCodeModal({
+    required GlobalKey key,
     WalletConnect? connector,
     ModalSettings? modalSettings,
     QrCodeSettings? qrCodeSettings,
@@ -21,6 +22,7 @@ class WalletConnectQrCodeModal {
     WalletListPageBuilder? walletListPageBuilder,
   }) {
     connector = connector ?? WalletConnect();
+    SettingsManager.instance.init(key);
     SettingsManager.instance.update(
       qrCodeSettings: qrCodeSettings,
       modalSettings: modalSettings,
@@ -43,8 +45,7 @@ class WalletConnectQrCodeModal {
 
   /// Connect to a new session.
   /// [context] is needed to show the QR code dialog.
-  Future<SessionStatus?> connect(
-    BuildContext context, {
+  Future<SessionStatus?> connect({
     int? chainId,
   }) async {
     if (_connector.connected) {
@@ -54,7 +55,7 @@ class WalletConnectQrCodeModal {
       );
     }
 
-    return await _createSessionWithModal(context, chainId: chainId);
+    return await _createSessionWithModal(chainId: chainId);
   }
 
   /// Send custom request with [method], [params] and optional [topic].
@@ -99,15 +100,13 @@ class WalletConnectQrCodeModal {
     required WalletConnect connector,
   }) : _connector = connector;
 
-  Future<SessionStatus?> _createSessionWithModal(
-    BuildContext context, {
+  Future<SessionStatus?> _createSessionWithModal({
     int? chainId,
   }) async {
     bool isDismissed = false;
     bool isError = false;
     bool sessionCreated = false;
 
-    SettingsManager.instance.init(context);
     _walletManager.clear();
 
     final CancelableCompleter cancelableCompleter = CancelableCompleter();
@@ -120,7 +119,7 @@ class WalletConnectQrCodeModal {
             onDisplayUri: (uri) async {
               _walletManager.update(uri: uri);
               await showDialog(
-                context: context,
+                context: settingsManager.key.currentContext!,
                 useSafeArea: true,
                 barrierDismissible: true,
                 builder: (context) {
@@ -144,7 +143,7 @@ class WalletConnectQrCodeModal {
         return session;
       } catch (e) {
         isError = true;
-        context.navigator().pop();
+        settingsManager.key.currentContext!.navigator().pop();
         rethrow;
       }
     }
@@ -154,7 +153,7 @@ class WalletConnectQrCodeModal {
     cancelableCompleter.operation.value.then((session) {
       sessionCreated = true;
       if (!isDismissed) {
-        Navigator.of(context).pop();
+        settingsManager.key.currentContext!.navigator().pop();
       }
       if (!completer.isCompleted) {
         completer.complete(session);
