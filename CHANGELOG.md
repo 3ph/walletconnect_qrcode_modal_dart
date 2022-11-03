@@ -1,3 +1,6 @@
+## 0.1.0
+* Adds customization support
+
 ## 0.0.6
 * Fixes styling
 
