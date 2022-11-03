@@ -11,7 +11,7 @@ class QrCodeSettings {
     this.qrCodePadding = const EdgeInsets.only(top: 8),
     this.qrCodeColor,
     this.copyButtonStyle,
-    this.copyText = 'Copy to clipboard',
+    this.copyText = 'Copy',
     this.copiedText = 'Copied',
     this.copyIcon = Icons.copy,
     this.copiedIcon = Icons.check,
