@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../modal_main_page.dart';
 import '../models/wallet.dart';
 
+/// Builder for a custom row builder
 typedef ModalWalletListRowBuilder = Widget Function(
   BuildContext context,
   Wallet wallet,
@@ -26,9 +27,17 @@ class ModalWalletListWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  /// WalletConnect
   final String url;
+
+  /// List of wallets to show and choose from
   final Future<List<Wallet>> wallets;
+
+  /// Main wallet callback after wallet is selected
   final WalletCallback? walletCallback;
+
+  /// Callback when row (wallet) it tapped
+  final Function(Wallet wallet, String url)? onWalletTap;
 
   /// List title
   final String title;
@@ -41,9 +50,6 @@ class ModalWalletListWidget extends StatelessWidget {
 
   /// List title text align
   final TextAlign? titleTextAlign;
-
-  /// Callback when row (wallet) it tapped
-  final Function(Wallet wallet, String url)? onWalletTap;
 
   /// Wallet row builder
   final ModalWalletListRowBuilder? rowBuilder;
@@ -113,6 +119,10 @@ class ModalWalletListWidget extends StatelessWidget {
   }
 
   ModalWalletListWidget copyWith({
+    String? url,
+    Future<List<Wallet>>? wallets,
+    WalletCallback? walletCallback,
+    Function(Wallet wallet, String url)? onWalletTap,
     EdgeInsets? titlePadding,
     TextStyle? titleTextStyle,
     TextAlign? titleTextAlign,
@@ -120,10 +130,10 @@ class ModalWalletListWidget extends StatelessWidget {
     Widget? loadingWidget,
   }) =>
       ModalWalletListWidget(
-        url: url,
-        wallets: wallets,
-        walletCallback: walletCallback,
-        onWalletTap: onWalletTap,
+        url: url ?? this.url,
+        wallets: wallets ?? this.wallets,
+        walletCallback: walletCallback ?? this.walletCallback,
+        onWalletTap: onWalletTap ?? this.onWalletTap,
         title: title,
         titlePadding: titlePadding ?? this.titlePadding,
         titleTextStyle: titleTextStyle ?? this.titleTextStyle,
@@ -151,20 +161,40 @@ class ModalWalletListRowWidget extends StatelessWidget {
             'https://registry.walletconnect.org/logo/sm/${wallet.id}.jpeg',
         super(key: key);
 
+  /// Wallet data for this row.
   final Wallet wallet;
+
+  /// URL of the wallet image
   final String imageUrl;
+
+  /// Callback when the row is selected
   final Function(Wallet wallet)? onWalletTap;
 
+  /// Widget representing the name of the wallet
   final Widget? nameWidget;
+
+  /// Padding around the wallet name
   final EdgeInsets? namePadding;
+
+  /// Style of the wallet name
   final TextStyle? nameTextStyle;
+
+  /// Alignment of the wallet name
   final TextAlign? nameTextAlign;
 
+  /// Widget representing the wallet image
   final Widget? imageWidget;
+
+  /// Border radius of the wallet image
   final double? imageBorderRadius;
+
+  /// Box shadow of the wallet image
   final BoxShadow? imageBoxShadow;
+
+  /// Wallet image height
   final double? imageHeight;
 
+  /// Row trailing widget
   final Widget? trailingWidget;
 
   @override
@@ -227,6 +257,8 @@ class ModalWalletListRowWidget extends StatelessWidget {
   }
 
   ModalWalletListRowWidget copyWith({
+    Wallet? wallet,
+    WalletCallback? onWalletTap,
     Widget? nameWidget,
     EdgeInsets? namePadding,
     TextStyle? nameTextStyle,
@@ -239,8 +271,8 @@ class ModalWalletListRowWidget extends StatelessWidget {
     Key? key,
   }) =>
       ModalWalletListRowWidget(
-        wallet: wallet,
-        onWalletTap: onWalletTap,
+        wallet: wallet ?? this.wallet,
+        onWalletTap: onWalletTap ?? this.onWalletTap,
         nameWidget: nameWidget ?? this.nameWidget,
         namePadding: namePadding ?? this.namePadding,
         nameTextStyle: nameTextStyle ?? this.nameTextStyle,

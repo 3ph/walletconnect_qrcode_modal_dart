@@ -11,7 +11,10 @@ class ModalWalletButtonWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  /// WalletConnect URI
   final String uri;
+
+  /// Button text
   final String text;
 
   /// Button style
@@ -39,14 +42,16 @@ class ModalWalletButtonWidget extends StatelessWidget {
   }
 
   ModalWalletButtonWidget copyWith({
+    String? uri,
+    String? text,
     ButtonStyle? buttonStyle,
     TextStyle? textStyle,
     TextAlign? textAlign,
     Key? key,
   }) =>
       ModalWalletButtonWidget(
-        uri: uri,
-        text: text,
+        uri: uri ?? this.uri,
+        text: text ?? this.text,
         buttonStyle: buttonStyle,
         textStyle: textStyle ?? this.textStyle,
         textAlign: textAlign ?? textAlign,

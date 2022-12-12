@@ -12,11 +12,13 @@ import '/src/components/modal_qrcode_widget.dart';
 import 'modal_wallet_list_widget.dart';
 import 'modal_wallet_button_widget.dart';
 
+/// Custom segment thumb builder
 typedef ModalSegmentThumbBuilder = Widget Function(
   BuildContext context,
   ModalSegmentThumbWidget defaultSegmentThumbWidget,
 );
 
+/// Custom wallet button builder
 typedef ModalWalletButtonBuilder = Widget Function(
   BuildContext context,
 
@@ -24,6 +26,7 @@ typedef ModalWalletButtonBuilder = Widget Function(
   ModalWalletButtonWidget defaultWalletButtonWidget,
 );
 
+/// Custom wallet list builder
 typedef ModalWalletListBuilder = Widget Function(
   BuildContext context,
 
@@ -31,6 +34,7 @@ typedef ModalWalletListBuilder = Widget Function(
   ModalWalletListWidget defaultWalletListWidget,
 );
 
+/// Custom QR code builder
 typedef ModalQrCodeBuilder = Widget Function(
   BuildContext context,
 

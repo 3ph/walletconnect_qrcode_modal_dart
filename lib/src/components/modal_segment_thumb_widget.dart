@@ -37,13 +37,14 @@ class ModalSegmentThumbWidget extends StatelessWidget {
   }
 
   ModalSegmentThumbWidget copyWith({
+    String? text,
     double? width,
     TextStyle? textStyle,
     TextAlign? textAlign,
     Key? key,
   }) =>
       ModalSegmentThumbWidget(
-        text: text,
+        text: text ?? this.text,
         width: width ?? this.width,
         textStyle: textStyle ?? this.textStyle,
         textAlign: textAlign ?? this.textAlign,
