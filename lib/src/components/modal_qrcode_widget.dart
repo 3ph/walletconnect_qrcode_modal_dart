@@ -20,32 +20,53 @@ class ModalQrCodeWidget extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
+  /// WalletConnect URI
   final String uri;
 
   /// Padding around the content
   final EdgeInsets? padding;
 
-  // Title customizations
+  /// Title text
   final String title;
+
+  /// Title text style
   final TextStyle? titleTextStyle;
+
+  /// Title text align
   final TextAlign? titleTextAlign;
 
-  // QR code customizations
+  /// Custom QR code widget
   final Widget? qrCodeWidget;
+
+  /// QR code padding
   final EdgeInsets? qrCodePadding;
 
-  // Copy customizations
+  /// Custom copy button widget
   final Widget? copyButton;
+
+  /// Copy button style
   final ButtonStyle? copyButtonStyle;
+
+  /// Copy button text
   final String copyText;
+
+  /// Copied text
   final String copiedText;
+
+  /// Copy button text style
   final TextStyle? copyButtonTextStyle;
+
+  /// Copy button text align
   final TextAlign? copyButtonTextAlign;
 
   @override
   State<ModalQrCodeWidget> createState() => _ModalQrCodeWidget();
 
   ModalQrCodeWidget copyWith({
+    String? uri,
+    String? title,
+    String? copyText,
+    String? copiedText,
     EdgeInsets? padding,
     TextStyle? titleTextStyle,
     TextAlign? titleTextAlign,
@@ -57,10 +78,10 @@ class ModalQrCodeWidget extends StatefulWidget {
     TextAlign? copyButtonTextAlign,
   }) =>
       ModalQrCodeWidget(
-        uri: uri,
-        title: title,
-        copyText: copyText,
-        copiedText: copiedText,
+        uri: uri ?? this.uri,
+        title: title ?? this.title,
+        copyText: copyText ?? this.copyText,
+        copiedText: copiedText ?? this.copiedText,
         padding: padding ?? this.padding,
         titleTextStyle: titleTextStyle ?? this.titleTextStyle,
         titleTextAlign: titleTextAlign ?? this.titleTextAlign,

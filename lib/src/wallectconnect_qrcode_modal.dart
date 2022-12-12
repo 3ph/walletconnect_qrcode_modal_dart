@@ -22,6 +22,7 @@ class WalletConnectQrCodeModal {
     );
   }
 
+  /// WalletConnect connector
   WalletConnect get connector => _connector;
 
   /// Connect to a new session.

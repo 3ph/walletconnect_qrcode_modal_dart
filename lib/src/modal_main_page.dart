@@ -5,6 +5,7 @@ import 'components/modal_widget.dart';
 
 import 'models/wallet.dart';
 
+/// Builder for custom QR code modal
 typedef QrCodeModalBuilder = Widget Function(
   BuildContext,
   String uri,
@@ -12,6 +13,7 @@ typedef QrCodeModalBuilder = Widget Function(
   ModalWidget defaultModalWidget,
 );
 
+/// Callback when wallet is selected
 typedef WalletCallback = Function(Wallet);
 
 class ModalMainPage extends StatelessWidget {
