@@ -1,11 +1,14 @@
+## 0.1.1
+* Add data customization support.
+
 ## 0.1.0
-* Adds customization support
+* Adds customization support.
 
 ## 0.0.6
-* Fixes styling
+* Fixes styling.
 
 ## 0.0.5
-* Updates example up to support all platforms
+* Updates example up to support all platforms.
 
 ## 0.0.4
 * Adds support for desktop and web.
