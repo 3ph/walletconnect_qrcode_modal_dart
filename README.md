@@ -126,7 +126,7 @@ Various UI elements are accessible through different builders which allows you t
 
 ### Properties
 
-All the customizable properties can be found in the API reference. List of customisable widgets:
+List of customisable widgets:
 
 - `ModalWidget` - represents the whole modal
 - `ModalSegmentThumbWidget` - represents a segment in the main segmented control widget
