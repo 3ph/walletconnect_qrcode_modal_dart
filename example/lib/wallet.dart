@@ -59,7 +59,7 @@ class _WalletPageState extends State<WalletPage> {
                   padding: const EdgeInsets.only(top: 16),
                   child: Text(
                     'Address',
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
                 Text(widget.connector.address),
@@ -67,7 +67,7 @@ class _WalletPageState extends State<WalletPage> {
                   padding: const EdgeInsets.only(top: 16),
                   child: Text(
                     'Balance',
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
                 FutureBuilder<double>(

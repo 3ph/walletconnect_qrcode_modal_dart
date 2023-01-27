@@ -103,7 +103,7 @@ class _TestPageState extends State<TestPage> {
                   ),
                   child: Text(
                     'Connect to the $_networkName account through WalletConnect.\n\nPlease note that the transaction will be sent to testnet network no matter what your Wallet is set to.',
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.center,
                   ),
                 ),
