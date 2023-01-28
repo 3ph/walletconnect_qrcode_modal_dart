@@ -153,8 +153,8 @@ class WalletConnectQrCodeModal {
         completer.complete(session);
       }
     }).catchError((error) {
-      debugPrint(error);
-      completer.completeError(error);
+      debugPrint(error.message);
+      completer.completeError(error.message);
     });
 
     return completer.future;
