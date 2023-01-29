@@ -162,7 +162,13 @@ class _TestPageState extends State<TestPage> {
         return () async {
           setState(() => _state = ConnectionState.connecting);
           try {
-            final session = await connector.connect(context);
+            final session =
+                await connector.connect(context).catchError((error) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(error)));
+              return null;
+            });
+
             if (session != null) {
               setState(() => _state = ConnectionState.connected);
               Future.delayed(Duration.zero, () => _openWalletPage());
