@@ -1,5 +1,8 @@
+## 0.1.2
+* Fixes session exception and updates example app.
+
 ## 0.1.1
-* Add data customization support.
+* Adds data customization support.
 
 ## 0.1.0
 * Adds customization support.

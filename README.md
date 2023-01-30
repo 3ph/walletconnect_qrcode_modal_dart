@@ -53,8 +53,15 @@ qrCodeModal.registerListeners(
   onDisconnect: () => print('Disconnected'),
 );
 
-// Create QR code modal and connect to a wallet
-await qrCodeModal.connect(context, chainId: 2);
+// Create QR code modal and connect to a wallet, connector returns WalletConnect
+// session which can be saved and restored.
+final session = await qrCodeModal.connect(context, chainId: 2)
+    // Errors can also be caught from connector, eg. session cancelled
+    .catchError((error) {
+        // Handle error here
+        debugPrint(error);
+        return null;
+    });
 ```
 
 **Send transaction**
