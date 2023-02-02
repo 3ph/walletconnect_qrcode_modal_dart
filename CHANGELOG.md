@@ -1,3 +1,7 @@
+## 0.2.0
+* Adds card shape parameter
+* BREAKING CHANGE: thumb builders moved into a new selector builder
+
 ## 0.1.2
 * Fixes session exception and updates example app.
 

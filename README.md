@@ -122,11 +122,14 @@ Various UI elements are accessible through different builders which allows you t
 - `modalBuilder` - the main builder representing the whole modal, provides default `ModalWidget`
 
 `ModalWidget` builders:
-- `walletSegmentThumbBuilder` - represents the Wallet/Desktop segmented control thumb
-- `qrSegmentThumbBuilder` - represents the QR Code segmented control thumb
+- `selectorBuilder` - represents the Wallet list or QR code selector
 - `walletButtonBuilder` - represents Android modal content (single button with 'Connect')
 - `walletListBuilder` - represents iOS/Desktop modal content (list of wallets)
 - `qrCodeBuilder` - represents QR Code content
+
+`ModalSelectorWidget` builder:
+- `walletSegmentThumbBuilder` - represents the Wallet/Desktop segmented control thumb
+- `qrSegmentThumbBuilder` - represents the QR Code segmented control thumb
 
 `ModalWalletListWidget` builders:
 - `rowBuilder` - represents a Wallet row in the Wallet list
@@ -136,6 +139,7 @@ Various UI elements are accessible through different builders which allows you t
 List of customisable widgets:
 
 - `ModalWidget` - represents the whole modal
+- `ModalSelectorWidget` - represents the segmented control widget for choosing between list and QR code
 - `ModalSegmentThumbWidget` - represents a segment in the main segmented control widget
 - `ModalWalletButtonWidget` - represents the single button widget (for Android)
 - `ModalWalletListWidget` - represents the list of wallets (for iOS and desktop)
@@ -143,6 +147,15 @@ List of customisable widgets:
 
 ## Example
 The aim of the example app is to demonstrate simple transaction using QR code modal. The connected wallet has to be configured for Ethereum (Ropsten) or Algorand test network with at least 0.001 tokens available (plus fee amount for the transaction). After connecting to the wallet the app would try to transfer 0.001 Eth/Algo from the wallet account to the same account (you should see some fee being deducted as well).
+
+## Migration guide
+
+### 0.1.x to 0.2.x
+`selectorBuilder` was added to add more flexibility to customize the whole selector segmented control. `ModalSelectorWidget` now represents this widget.
+- `walletSegmentThumbBuilder` and `qrSegmentThumbBuilder` was moved into the new `ModalSelectorWidget`
+- `segmentedControlBackgroundColor` was renamed to `backgroundColor` and moved to `ModalSelectorWidget`
+- `segmentedControlPadding` was renamed to `padding` and moved to `ModalSelectorWidget`
+- `cardShape` was added to `ModalWidget` to represent card shape parameter
 
 ## Changelog
 
