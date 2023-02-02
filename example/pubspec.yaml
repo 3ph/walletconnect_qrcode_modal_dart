@@ -13,7 +13,6 @@ dependencies:
   flutter:
     sdk: flutter
   url_launcher: ^6.1.8
-  walletconnect_dart: ^0.0.11
   walletconnect_qrcode_modal_dart:
     path: ..
   web3dart: ^2.6.1

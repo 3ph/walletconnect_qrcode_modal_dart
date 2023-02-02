@@ -189,6 +189,7 @@ class EthereumTestConnector implements TestConnector {
   late final WalletConnectQrCodeModal _connector;
   late final EthereumWalletConnectProvider _provider;
   final _ethereum = Web3Client(
-      'https://ropsten.infura.io/v3/0db053799f0e48e99357b6dce022b1e7',
-      Client());
+    'https://goerli.infura.io/v3/0db053799f0e48e99357b6dce022b1e7',
+    Client(),
+  );
 }

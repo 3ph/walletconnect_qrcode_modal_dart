@@ -173,6 +173,9 @@ class _TestPageState extends State<TestPage> {
               setState(() => _state = ConnectionState.connected);
               Future.delayed(Duration.zero, () => _openWalletPage());
             } else {
+              // NOTE: workaround for `connect` working only once
+              // see https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart/issues/22
+              connector = EthereumTestConnector();
               setState(() => _state = ConnectionState.connectionCancelled);
             }
           } catch (e) {

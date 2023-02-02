@@ -638,7 +638,7 @@ packages:
     source: hosted
     version: "0.0.7"
   walletconnect_dart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: walletconnect_dart
       sha256: "6d69d3f7ed43b4a111458da0ba078f4ea291ff11328068c9cbf5cab3bd86593f"
