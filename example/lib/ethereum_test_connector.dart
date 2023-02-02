@@ -73,6 +73,9 @@ class EthereumTestConnector implements TestConnector {
       // modalBuilder: (context, uri, callback, defaultModalWidget) {
       //   return defaultModalWidget.copyWith(
       //     cardColor: Colors.pink,
+      //     cardShape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(16),
+      //     ),
       //     selectorBuilder: (context, defaultSelectorWidget) =>
       //         defaultSelectorWidget.copyWith(
       //       backgroundColor: Colors.yellow,

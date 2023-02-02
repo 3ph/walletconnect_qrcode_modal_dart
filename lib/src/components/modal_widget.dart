@@ -57,6 +57,7 @@ class ModalWidget extends StatefulWidget {
     this.height,
     this.cardColor,
     this.cardPadding,
+    this.cardShape,
     this.selectorBuilder,
     this.walletButtonBuilder,
     this.walletListBuilder,
@@ -82,6 +83,9 @@ class ModalWidget extends StatefulWidget {
   /// Content card padding
   final EdgeInsets? cardPadding;
 
+  /// Content card shape
+  final ShapeBorder? cardShape;
+
   /// Modal selector widget (for choosing between list and QR)
   final ModalSelectorBuilder? selectorBuilder;
 
@@ -102,6 +106,7 @@ class ModalWidget extends StatefulWidget {
     double? height,
     EdgeInsets? cardPadding,
     Color? cardColor,
+    ShapeBorder? cardShape,
     ModalSelectorBuilder? selectorBuilder,
     ModalWalletButtonBuilder? walletButtonBuilder,
     ModalWalletListBuilder? walletListBuilder,
@@ -115,6 +120,7 @@ class ModalWidget extends StatefulWidget {
         height: height ?? this.height,
         cardPadding: cardPadding ?? this.cardPadding,
         cardColor: cardColor ?? this.cardColor,
+        cardShape: cardShape ?? this.cardShape,
         selectorBuilder: selectorBuilder ?? this.selectorBuilder,
         walletButtonBuilder: walletButtonBuilder ?? this.walletButtonBuilder,
         walletListBuilder: walletListBuilder ?? this.walletListBuilder,
@@ -149,6 +155,7 @@ class _ModalWidgetState extends State<ModalWidget> {
             widget.height ?? max(500, MediaQuery.of(context).size.height * 0.5),
         child: Card(
           color: widget.cardColor,
+          shape: widget.cardShape,
           child: Padding(
             padding: widget.cardPadding ?? const EdgeInsets.all(8),
             child: DefaultTabController(
