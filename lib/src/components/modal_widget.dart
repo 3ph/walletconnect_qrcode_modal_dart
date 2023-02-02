@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:walletconnect_qrcode_modal_dart/src/components/modal_segment_thumb_widget.dart';
 import 'package:walletconnect_qrcode_modal_dart/src/components/modal_selector_widget.dart';
