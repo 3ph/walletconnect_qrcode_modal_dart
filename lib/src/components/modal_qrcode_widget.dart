@@ -111,9 +111,11 @@ class _ModalQrCodeWidget extends State<ModalQrCodeWidget> {
                 ),
           ),
           Expanded(
-            child: Padding(
-              padding: widget.qrCodePadding ?? const EdgeInsets.only(top: 8),
-              child: widget.qrCodeWidget ?? QrImage(data: widget.uri),
+            child: Center(
+              child: Padding(
+                padding: widget.qrCodePadding ?? const EdgeInsets.only(top: 8),
+                child: widget.qrCodeWidget ?? QrImage(data: widget.uri),
+              ),
             ),
           ),
           TextButton(
