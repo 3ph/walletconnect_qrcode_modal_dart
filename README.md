@@ -157,6 +157,8 @@ modalBuilder: (context, uri, callback, defaultModalWidget) {
     platformOverrides: const ModalWalletPlatformOverrides(
       android: ModalWalletType.listMobile,
     ),
+  );
+}
 ```
 
 This would force the library to use `walletListBuilder` on the Android platform. There are 3 types of types available:
