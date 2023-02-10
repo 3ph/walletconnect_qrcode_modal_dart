@@ -169,7 +169,7 @@ This would force the library to use `walletListBuilder` on the Android platform.
 Platform can be overriden to use any of the above types, the default functionality is not guaranteed (due to restriction on some platforms) but it allows more customization on each platform.
 
 ## Example
-The aim of the example app is to demonstrate simple transaction using QR code modal. The connected wallet has to be configured for Ethereum (Ropsten) or Algorand test network with at least 0.001 tokens available (plus fee amount for the transaction). After connecting to the wallet the app would try to transfer 0.001 Eth/Algo from the wallet account to the same account (you should see some fee being deducted as well).
+The aim of the example app is to demonstrate simple transaction using QR code modal. The connected wallet has to be configured for Ethereum (Goerli) or Algorand test network with at least 0.001 tokens available (plus fee amount for the transaction). After connecting to the wallet the app would try to transfer 0.001 Eth/Algo from the wallet account to the same account (you should see some fee being deducted as well).
 
 ## Migration guide
 
