@@ -72,6 +72,9 @@ class EthereumTestConnector implements TestConnector {
       // UNCOMMENT below to make customizations, a few example customizations listed
       // modalBuilder: (context, uri, callback, defaultModalWidget) {
       //   return defaultModalWidget.copyWith(
+      //     platformOverrides: const ModalWalletPlatformOverrides(
+      //       android: ModalWalletType.listMobile,
+      //     ),
       //     cardColor: Colors.pink,
       //     cardShape: RoundedRectangleBorder(
       //       borderRadius: BorderRadius.circular(16),

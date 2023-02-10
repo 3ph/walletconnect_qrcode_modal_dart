@@ -9,6 +9,7 @@ import '../store/wallet_store.dart';
 import '/src/modal_main_page.dart';
 import '/src/utils/utils.dart';
 import '/src/components/modal_qrcode_widget.dart';
+import 'modal_platform_overrides.dart';
 import 'modal_wallet_list_widget.dart';
 import 'modal_wallet_button_widget.dart';
 
@@ -61,6 +62,7 @@ class ModalWidget extends StatefulWidget {
     this.walletButtonBuilder,
     this.walletListBuilder,
     this.qrCodeBuilder,
+    this.platformOverrides,
     Key? key,
   }) : super(key: key);
 
@@ -97,6 +99,9 @@ class ModalWidget extends StatefulWidget {
   /// Modal content QR code
   final ModalQrCodeBuilder? qrCodeBuilder;
 
+  /// Platform overrides for wallet widgets
+  final ModalWalletPlatformOverrides? platformOverrides;
+
   @override
   State<ModalWidget> createState() => _ModalWidgetState();
 
@@ -110,6 +115,7 @@ class ModalWidget extends StatefulWidget {
     ModalWalletButtonBuilder? walletButtonBuilder,
     ModalWalletListBuilder? walletListBuilder,
     ModalQrCodeBuilder? qrCodeBuilder,
+    ModalWalletPlatformOverrides? platformOverrides,
     Key? key,
   }) =>
       ModalWidget(
@@ -124,6 +130,7 @@ class ModalWidget extends StatefulWidget {
         walletButtonBuilder: walletButtonBuilder ?? this.walletButtonBuilder,
         walletListBuilder: walletListBuilder ?? this.walletListBuilder,
         qrCodeBuilder: qrCodeBuilder ?? this.qrCodeBuilder,
+        platformOverrides: platformOverrides ?? this.platformOverrides,
         key: key ?? this.key,
       );
 }
@@ -170,6 +177,7 @@ class _ModalWidgetState extends State<ModalWidget> {
                       walletButtonBuilder: widget.walletButtonBuilder,
                       walletListBuilder: widget.walletListBuilder,
                       qrCodeBuilder: widget.qrCodeBuilder,
+                      platformOverrides: widget.platformOverrides,
                     ),
                   ),
                 ],
@@ -190,6 +198,7 @@ class _ModalContent extends StatelessWidget {
     this.walletButtonBuilder,
     this.walletListBuilder,
     this.qrCodeBuilder,
+    this.platformOverrides,
     Key? key,
   }) : super(key: key);
 
@@ -199,50 +208,82 @@ class _ModalContent extends StatelessWidget {
   final ModalWalletButtonBuilder? walletButtonBuilder;
   final ModalWalletListBuilder? walletListBuilder;
   final ModalQrCodeBuilder? qrCodeBuilder;
+  final ModalWalletPlatformOverrides? platformOverrides;
 
   @override
   Widget build(BuildContext context) {
-    if (groupValue == (Utils.isDesktop ? 1 : 0)) {
-      if (Utils.isIOS) {
-        final defaultWidget = ModalWalletListWidget(
-          url: uri,
-          wallets: _iosWallets,
-          walletCallback: walletCallback,
-          onWalletTap: (wallet, url) => Utils.iosLaunch(
-            wallet: wallet,
-            uri: url,
-          ),
-        );
-        if (walletListBuilder != null) {
-          return walletListBuilder!.call(context, defaultWidget);
-        }
-
-        return defaultWidget;
-      } else if (Utils.isAndroid) {
-        final defaultWidget = ModalWalletButtonWidget(uri: uri);
-        if (walletButtonBuilder != null) {
-          return walletButtonBuilder!.call(
-            context,
-            defaultWidget,
+    Widget platformOverride(ModalWalletType type) {
+      switch (type) {
+        case ModalWalletType.button:
+          return ModalWalletButtonWidget(uri: uri);
+        case ModalWalletType.listMobile:
+          return ModalWalletListWidget(
+            url: uri,
+            wallets: _mobileWallets,
+            walletCallback: walletCallback,
+            onWalletTap: (wallet, url) => Utils.iosLaunch(
+              wallet: wallet,
+              uri: url,
+            ),
           );
-        }
-        return defaultWidget;
-      } else {
-        final defaultWidget = ModalWalletListWidget(
-          url: uri,
-          wallets: _desktopWallets,
-          walletCallback: walletCallback,
-          onWalletTap: (wallet, url) => Utils.desktopLaunch(
-            wallet: wallet,
-            uri: uri,
-          ),
-        );
-        if (walletListBuilder != null) {
-          return walletListBuilder!.call(context, defaultWidget);
-        }
-
-        return defaultWidget;
+        case ModalWalletType.listDesktop:
+          return ModalWalletListWidget(
+            url: uri,
+            wallets: _desktopWallets,
+            walletCallback: walletCallback,
+            onWalletTap: (wallet, url) => Utils.desktopLaunch(
+              wallet: wallet,
+              uri: uri,
+            ),
+          );
       }
+    }
+
+    Widget callBuilder(ModalWalletType type, Widget defaultWidget) {
+      switch (type) {
+        case ModalWalletType.button:
+          if (walletButtonBuilder != null) {
+            return walletButtonBuilder!.call(
+              context,
+              defaultWidget as ModalWalletButtonWidget,
+            );
+          } else {
+            return defaultWidget;
+          }
+        case ModalWalletType.listMobile:
+        case ModalWalletType.listDesktop:
+          if (walletListBuilder != null) {
+            return walletListBuilder!
+                .call(context, defaultWidget as ModalWalletListWidget);
+          } else {
+            return defaultWidget;
+          }
+      }
+    }
+
+    if (groupValue == (Utils.isDesktop ? 1 : 0)) {
+      final ModalWalletType type;
+      if (Utils.isIOS) {
+        if (platformOverrides?.ios != null) {
+          type = platformOverrides!.ios!;
+        } else {
+          type = ModalWalletType.listMobile;
+        }
+      } else if (Utils.isAndroid) {
+        if (platformOverrides?.android != null) {
+          type = platformOverrides!.android!;
+        } else {
+          type = ModalWalletType.button;
+        }
+      } else {
+        if (platformOverrides?.desktop != null) {
+          type = platformOverrides!.desktop!;
+        } else {
+          type = ModalWalletType.listDesktop;
+        }
+      }
+      final defaultWidget = platformOverride(type);
+      return callBuilder(type, defaultWidget);
     }
 
     final qrCodeWidget = ModalQrCodeWidget(uri: uri);
@@ -253,19 +294,23 @@ class _ModalContent extends StatelessWidget {
     return qrCodeWidget;
   }
 
-  Future<List<Wallet>> get _iosWallets {
+  Future<List<Wallet>> get _mobileWallets {
     Future<bool> shouldShow(wallet) async =>
         await Utils.openableLink(wallet.mobile.universal) ||
         await Utils.openableLink(wallet.mobile.native) ||
-        await Utils.openableLink(wallet.app.ios);
+        (!Utils.isDesktop &&
+            await Utils.openableLink(
+                Utils.isAndroid ? wallet.app.android : wallet.app.ios));
 
     return const WalletStore().load().then(
       (wallets) async {
         final filter = <Wallet>[];
         for (final wallet in wallets) {
-          if (await shouldShow(wallet)) {
-            filter.add(wallet);
-          }
+          try {
+            if (await shouldShow(wallet)) {
+              filter.add(wallet);
+            }
+          } catch (e) {}
         }
         return filter;
       },

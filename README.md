@@ -145,6 +145,27 @@ List of customisable widgets:
 - `ModalWalletListWidget` - represents the list of wallets (for iOS and desktop)
 - `ModalQrCodeWidget` - represents the QR code widget
 
+### Platform overrides
+
+It is possible override the default behavior on certain platform to customize the platform experience. For example you can override for Android to show the wallet list rather than a single button. It is recommended to stick with platform defaults.
+
+Example:
+
+```dart
+modalBuilder: (context, uri, callback, defaultModalWidget) {
+  return defaultModalWidget.copyWith(
+    platformOverrides: const ModalWalletPlatformOverrides(
+      android: ModalWalletType.listMobile,
+    ),
+```
+
+This would force the library to use `walletListBuilder` on the Android platform. There are 3 types of types available:
+- `button` - shows single button (default for Android), `walletButtonBuilder` is used
+- `listMobile` - shows list of possible wallets which can be linked on the mobile platform (default for iOS), `walletListBuilder` is used
+- `listDesktop` - shows list of possible wallets which can be linked on the desktop platform (default for desktop), `walletListBuilder` is used
+
+Platform can be overriden to use any of the above types, the default functionality is not guaranteed (due to restriction on some platforms) but it allows more customization on each platform.
+
 ## Example
 The aim of the example app is to demonstrate simple transaction using QR code modal. The connected wallet has to be configured for Ethereum (Ropsten) or Algorand test network with at least 0.001 tokens available (plus fee amount for the transaction). After connecting to the wallet the app would try to transfer 0.001 Eth/Algo from the wallet account to the same account (you should see some fee being deducted as well).
 

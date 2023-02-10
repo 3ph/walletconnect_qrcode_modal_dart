@@ -1,3 +1,6 @@
+## 0.3.0
+* Adds platform overrides
+
 ## 0.2.0
 * Adds card shape parameter
 * BREAKING CHANGE: thumb builders moved into a new selector builder
