@@ -310,7 +310,9 @@ class _ModalContent extends StatelessWidget {
             if (await shouldShow(wallet)) {
               filter.add(wallet);
             }
-          } catch (e) {}
+          } catch (e) {
+            debugPrint('Some links invalid for ${wallet.name}');
+          }
         }
         return filter;
       },
