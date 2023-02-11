@@ -70,7 +70,7 @@ Example of Ethereum transaction:
 
 ```dart
 final provider = EthereumWalletConnectProvider(connector);
-final ethereum = Web3Client('https://ropsten.infura.io/', Client());
+final ethereum = Web3Client('https://goerli.infura.io/', Client());
 final sender = EthereumAddress.fromHex(session.accounts[0]);
 
 final transaction = Transaction(
