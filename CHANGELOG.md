@@ -1,3 +1,6 @@
+## 0.3.1
+* Adds return types to `sendCustomRequest` and `killSession`
+
 ## 0.3.0
 * Adds platform overrides
 
