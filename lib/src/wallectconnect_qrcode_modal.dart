@@ -42,7 +42,7 @@ class WalletConnectQrCodeModal {
   }
 
   /// Send custom request with [method], [params] and optional [topic].
-  Future<void> sendCustomRequest({
+  Future<dynamic> sendCustomRequest({
     required String method,
     required List<dynamic> params,
     String? topic,
@@ -50,7 +50,7 @@ class WalletConnectQrCodeModal {
       await _connector.sendCustomRequest(method: method, params: params);
 
   /// Kill the current session with [sessionError].
-  Future<void> killSession({String? sessionError}) async =>
+  Future<dynamic> killSession({String? sessionError}) async =>
       await _connector.killSession(sessionError: sessionError);
 
   /// Register callback listeners.
