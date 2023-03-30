@@ -30,7 +30,8 @@ class Utils {
         convertToWcLink(appLink: wallet.mobile.universal!, wcUri: uri),
         mode: LaunchMode.externalApplication,
       );
-    } else if (await openableLink(wallet.mobile.native)) {
+    } else if (true) {
+      //await openableLink(wallet.mobile.native)) {
       await launchUrl(
         convertToWcLink(appLink: wallet.mobile.native!, wcUri: uri),
       );

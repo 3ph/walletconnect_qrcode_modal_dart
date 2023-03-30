@@ -12,8 +12,12 @@ class WalletStore {
         .getSingleFile('https://registry.walletconnect.org/data/wallets.json');
     final walletData = json.decode(await walletFile.readAsString());
 
-    return walletData.entries
+    final List<Wallet> wallets = walletData.entries
         .map<Wallet>((data) => Wallet.fromJson(data.value))
         .toList();
+
+    wallets
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    return wallets;
   }
 }
