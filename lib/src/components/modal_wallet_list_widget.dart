@@ -12,7 +12,13 @@ typedef ModalWalletListRowBuilder = Widget Function(
   ModalWalletListRowWidget defaultListRowWidget,
 );
 
-class ModalWalletListWidget extends StatelessWidget {
+/// Builder for a custom search widget builder
+typedef ModalWalletListSearchBuilder = ModalWalletListSearchWidget Function(
+  BuildContext context,
+  ModalWalletListSearchWidget defaultSearchWidget,
+);
+
+class ModalWalletListWidget extends StatefulWidget {
   const ModalWalletListWidget({
     required this.url,
     required this.wallets,
@@ -23,6 +29,7 @@ class ModalWalletListWidget extends StatelessWidget {
     this.titleTextAlign,
     this.onWalletTap,
     this.rowBuilder,
+    this.searchBuilder,
     this.loadingWidget,
     Key? key,
   }) : super(key: key);
@@ -57,66 +64,11 @@ class ModalWalletListWidget extends StatelessWidget {
   /// Loading widget when list is being populated
   final Widget? loadingWidget;
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: wallets,
-      builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
-        if (walletData.hasData) {
-          return Column(
-            children: [
-              Padding(
-                padding:
-                    titlePadding ?? const EdgeInsets.only(top: 16, bottom: 8),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    title,
-                    textAlign: titleTextAlign ?? TextAlign.center,
-                    style: titleTextStyle ??
-                        Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Colors.grey,
-                            ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: walletData.data!.length,
-                    itemBuilder: (context, index) {
-                      final wallet = walletData.data![index];
-                      final defaultRow = ModalWalletListRowWidget(
-                          wallet: wallet,
-                          onWalletTap: (wallet) {
-                            walletCallback?.call(wallet);
-                            onWalletTap?.call(wallet, url);
-                          });
-                      if (rowBuilder != null) {
-                        return rowBuilder!.call(
-                          context,
-                          wallet,
-                          defaultRow.imageUrl,
-                          defaultRow,
-                        );
-                      }
+  /// Custom search builder
+  final ModalWalletListSearchBuilder? searchBuilder;
 
-                      return defaultRow;
-                    }),
-              ),
-            ],
-          );
-        } else {
-          return loadingWidget ??
-              const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.grey,
-                ),
-              );
-        }
-      },
-    );
-  }
+  @override
+  State<ModalWalletListWidget> createState() => _ModalWalletListWidgetState();
 
   ModalWalletListWidget copyWith({
     String? url,
@@ -127,6 +79,7 @@ class ModalWalletListWidget extends StatelessWidget {
     TextStyle? titleTextStyle,
     TextAlign? titleTextAlign,
     ModalWalletListRowBuilder? rowBuilder,
+    ModalWalletListSearchBuilder? searchBuilder,
     Widget? loadingWidget,
     bool? shouldVerifyNativeLink,
   }) =>
@@ -140,8 +93,93 @@ class ModalWalletListWidget extends StatelessWidget {
         titleTextStyle: titleTextStyle ?? this.titleTextStyle,
         titleTextAlign: titleTextAlign ?? this.titleTextAlign,
         rowBuilder: rowBuilder ?? this.rowBuilder,
+        searchBuilder: searchBuilder ?? this.searchBuilder,
         loadingWidget: loadingWidget ?? this.loadingWidget,
       );
+}
+
+class _ModalWalletListWidgetState extends State<ModalWalletListWidget> {
+  String searchTerm = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: widget.wallets,
+      builder: (context, AsyncSnapshot<List<Wallet>> walletData) {
+        if (walletData.hasData) {
+          final defaultSearchWidget = ModalWalletListSearchWidget(
+            onSearchTermChanged: (term) => setState(() => searchTerm = term),
+          );
+
+          final List<Wallet> filteredWalletData;
+          if (searchTerm.isNotEmpty) {
+            filteredWalletData = walletData.data!
+                .where((wallet) => wallet.name
+                    .toLowerCase()
+                    .contains(searchTerm.toLowerCase()))
+                .toList();
+          } else {
+            filteredWalletData = walletData.data!;
+          }
+
+          return Column(
+            children: [
+              Padding(
+                padding: widget.titlePadding ??
+                    const EdgeInsets.only(top: 16, bottom: 8),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    widget.title,
+                    textAlign: widget.titleTextAlign ?? TextAlign.center,
+                    style: widget.titleTextStyle ??
+                        Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Colors.grey,
+                            ),
+                  ),
+                ),
+              ),
+              if (widget.searchBuilder != null)
+                widget.searchBuilder!.call(context, defaultSearchWidget)
+              else
+                defaultSearchWidget,
+              Expanded(
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filteredWalletData.length,
+                    itemBuilder: (context, index) {
+                      final wallet = filteredWalletData[index];
+                      final defaultRow = ModalWalletListRowWidget(
+                          wallet: wallet,
+                          onWalletTap: (wallet) {
+                            widget.walletCallback?.call(wallet);
+                            widget.onWalletTap?.call(wallet, widget.url);
+                          });
+                      if (widget.rowBuilder != null) {
+                        return widget.rowBuilder!.call(
+                          context,
+                          wallet,
+                          defaultRow.imageUrl,
+                          defaultRow,
+                        );
+                      }
+
+                      return defaultRow;
+                    }),
+              ),
+            ],
+          );
+        } else {
+          return widget.loadingWidget ??
+              const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.grey,
+                ),
+              );
+        }
+      },
+    );
+  }
 }
 
 class ModalWalletListRowWidget extends StatelessWidget {
@@ -284,5 +322,90 @@ class ModalWalletListRowWidget extends StatelessWidget {
         imageHeight: imageHeight ?? this.imageHeight,
         trailingWidget: trailingWidget ?? this.trailingWidget,
         key: this.key ?? key,
+      );
+}
+
+class ModalWalletListSearchWidget extends StatelessWidget {
+  const ModalWalletListSearchWidget({
+    this.child,
+    this.onSearchTermChanged,
+    this.fillColor,
+    this.borderRadius,
+    this.hintText,
+    this.hintStyle,
+    this.style,
+    Key? key,
+  }) : super(key: key);
+
+  /// A child representing the actual search widget
+  final Widget? child;
+
+  /// Callback when search term changes
+  final Function(String)? onSearchTermChanged;
+
+  /// Fill color
+  final Color? fillColor;
+
+  /// Textfield border radius
+  final double? borderRadius;
+
+  /// Hint text
+  final String? hintText;
+
+  /// Hint style
+  final TextStyle? hintStyle;
+
+  /// Text style
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: child ??
+          TextFormField(
+            style: style,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(borderRadius ?? 8),
+                borderSide: BorderSide.none,
+              ),
+              hintText: hintText ?? 'Search',
+              hintStyle: hintStyle ??
+                  Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.grey.shade600),
+              fillColor: fillColor ?? Colors.grey.shade300,
+              filled: true,
+            ),
+            onChanged: onSearchTermChanged,
+          ),
+    );
+  }
+
+  ModalWalletListSearchWidget copyWith({
+    Widget? child,
+    Function(String)? onSearchTermChanged,
+    Color? fillColor,
+    double? borderRadius,
+    String? hintText,
+    TextStyle? hintStyle,
+    TextStyle? style,
+    Key? key,
+  }) =>
+      ModalWalletListSearchWidget(
+        onSearchTermChanged: onSearchTermChanged ?? this.onSearchTermChanged,
+        fillColor: fillColor ?? this.fillColor,
+        borderRadius: borderRadius ?? this.borderRadius,
+        hintText: hintText ?? hintText,
+        hintStyle: hintStyle ?? this.hintStyle,
+        style: style ?? this.style,
+        key: this.key ?? key,
+        child: child ?? this.child,
       );
 }

@@ -71,8 +71,8 @@ class EthereumTestConnector implements TestConnector {
 
       // UNCOMMENT below to make customizations, a few example customizations listed
       // modalBuilder: (context, uri, callback, defaultModalWidget) {
-      // return defaultModalWidget.copyWith(
-      // shouldVerifyNativeLinks: true,
+      //   return defaultModalWidget.copyWith(
+      //     shouldVerifyNativeLinks: true,
       //     platformOverrides: const ModalWalletPlatformOverrides(
       //       android: ModalWalletType.listMobile,
       //     ),
@@ -100,6 +100,16 @@ class EthereumTestConnector implements TestConnector {
       //       titleTextAlign: TextAlign.end,
       //       rowBuilder: (context, wallet, imageUrl, defaultListRowWidget) =>
       //           defaultListRowWidget.copyWith(imageHeight: 50),
+      //       searchBuilder: (context, defaultSearchWidget) =>
+      //           defaultSearchWidget.copyWith(
+      //         hintText: 'Filter',
+      //         hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+      //               color: Colors.yellow,
+      //             ),
+      //         style: Theme.of(context).textTheme.bodySmall?.copyWith(
+      //               color: Colors.red,
+      //             ),
+      //       ),
       //     ),
       //     qrCodeBuilder: (context, defaultQrCodeWidget) =>
       //         defaultQrCodeWidget.copyWith(
@@ -107,7 +117,7 @@ class EthereumTestConnector implements TestConnector {
       //         backgroundColor: Colors.orange,
       //       ),
       //     ),
-      // );
+      //   );
       // },
     );
 
