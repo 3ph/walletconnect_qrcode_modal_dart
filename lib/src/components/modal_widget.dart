@@ -63,6 +63,7 @@ class ModalWidget extends StatefulWidget {
     this.walletListBuilder,
     this.qrCodeBuilder,
     this.platformOverrides,
+    this.shouldVerifyNativeLinks = false,
     Key? key,
   }) : super(key: key);
 
@@ -102,6 +103,11 @@ class ModalWidget extends StatefulWidget {
   /// Platform overrides for wallet widgets
   final ModalWalletPlatformOverrides? platformOverrides;
 
+  /// Whether it should try to verify the native link is openable.
+  /// This would require the native link scheme to be added to
+  /// `LSApplicationQueriesSchemes`. Default is false.
+  final bool shouldVerifyNativeLinks;
+
   @override
   State<ModalWidget> createState() => _ModalWidgetState();
 
@@ -116,6 +122,7 @@ class ModalWidget extends StatefulWidget {
     ModalWalletListBuilder? walletListBuilder,
     ModalQrCodeBuilder? qrCodeBuilder,
     ModalWalletPlatformOverrides? platformOverrides,
+    bool? shouldVerifyNativeLinks,
     Key? key,
   }) =>
       ModalWidget(
@@ -131,6 +138,8 @@ class ModalWidget extends StatefulWidget {
         walletListBuilder: walletListBuilder ?? this.walletListBuilder,
         qrCodeBuilder: qrCodeBuilder ?? this.qrCodeBuilder,
         platformOverrides: platformOverrides ?? this.platformOverrides,
+        shouldVerifyNativeLinks:
+            shouldVerifyNativeLinks ?? this.shouldVerifyNativeLinks,
         key: key ?? this.key,
       );
 }
@@ -178,6 +187,7 @@ class _ModalWidgetState extends State<ModalWidget> {
                       walletListBuilder: widget.walletListBuilder,
                       qrCodeBuilder: widget.qrCodeBuilder,
                       platformOverrides: widget.platformOverrides,
+                      shouldVerifyNativeLinks: widget.shouldVerifyNativeLinks,
                     ),
                   ),
                 ],
@@ -194,6 +204,7 @@ class _ModalContent extends StatelessWidget {
   const _ModalContent({
     required this.groupValue,
     required this.uri,
+    required this.shouldVerifyNativeLinks,
     this.walletCallback,
     this.walletButtonBuilder,
     this.walletListBuilder,
@@ -209,6 +220,7 @@ class _ModalContent extends StatelessWidget {
   final ModalWalletListBuilder? walletListBuilder;
   final ModalQrCodeBuilder? qrCodeBuilder;
   final ModalWalletPlatformOverrides? platformOverrides;
+  final bool shouldVerifyNativeLinks;
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +236,7 @@ class _ModalContent extends StatelessWidget {
             onWalletTap: (wallet, url) => Utils.iosLaunch(
               wallet: wallet,
               uri: url,
+              verifyNativeLink: shouldVerifyNativeLinks,
             ),
           );
         case ModalWalletType.listDesktop:

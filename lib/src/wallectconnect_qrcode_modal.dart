@@ -71,13 +71,19 @@ class WalletConnectQrCodeModal {
   /// Try to open Wallet selected during session creation.
   /// For iOS will try to open previously selected Wallet
   /// For Android will open system dialog
-  Future<void> openWalletApp() async {
+  Future<void> openWalletApp({
+    bool verifyNativeLink = false,
+  }) async {
     if (_uri == null) return;
 
     if (Utils.isIOS) {
       if (_wallet == null) return;
 
-      await Utils.iosLaunch(wallet: _wallet!, uri: _uri!);
+      await Utils.iosLaunch(
+        wallet: _wallet!,
+        uri: _uri!,
+        verifyNativeLink: verifyNativeLink,
+      );
     } else {
       await launchUrl(Uri.parse(_uri!));
     }

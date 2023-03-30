@@ -128,6 +128,7 @@ class ModalWalletListWidget extends StatelessWidget {
     TextAlign? titleTextAlign,
     ModalWalletListRowBuilder? rowBuilder,
     Widget? loadingWidget,
+    bool? shouldVerifyNativeLink,
   }) =>
       ModalWalletListWidget(
         url: url ?? this.url,

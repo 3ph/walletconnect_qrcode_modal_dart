@@ -71,7 +71,8 @@ class EthereumTestConnector implements TestConnector {
 
       // UNCOMMENT below to make customizations, a few example customizations listed
       // modalBuilder: (context, uri, callback, defaultModalWidget) {
-      //   return defaultModalWidget.copyWith(
+      // return defaultModalWidget.copyWith(
+      // shouldVerifyNativeLinks: true,
       //     platformOverrides: const ModalWalletPlatformOverrides(
       //       android: ModalWalletType.listMobile,
       //     ),
@@ -106,7 +107,7 @@ class EthereumTestConnector implements TestConnector {
       //         backgroundColor: Colors.orange,
       //       ),
       //     ),
-      //   );
+      // );
       // },
     );
 
