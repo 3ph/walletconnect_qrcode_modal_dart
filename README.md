@@ -133,6 +133,7 @@ Various UI elements are accessible through different builders which allows you t
 
 `ModalWalletListWidget` builders:
 - `rowBuilder` - represents a Wallet row in the Wallet list
+- `searchBuilder` - represents a search/filter widget to filter Wallet list. `onSearchTermChanged` callback needs to be implemented for filtering to work. The functionality is based on Wallet name.
 
 ### Properties
 
@@ -144,6 +145,20 @@ List of customisable widgets:
 - `ModalWalletButtonWidget` - represents the single button widget (for Android)
 - `ModalWalletListWidget` - represents the list of wallets (for iOS and desktop)
 - `ModalQrCodeWidget` - represents the QR code widget
+
+### Note on iOS
+
+There are currently 2 mechanisms to navigate from one app to another using links in iOS: using *native (deep) links* (an older mechanism) and *universal links*. These are preferred and use the usual _http(s)_ scheme. The native links use custom schemes (eg. `algorand://`) and proper use of custom schemes requires special permissions in iOS (scheme needs to be added to `LSApplicationQueriesSchemes`).
+
+Each Wallet registry record (which the package uses to determine how to communicate with the Wallet app) can specify either a native (deep) link or universal link (or both). The package first tries to verify the universal link and if this fails uses the native link. The problem is that without the special permission mentioned above the app is unable to verify the deep link. As a workaround, the package does not verify the deep links and just invokes them. The downside of this approach is that if the corresponding Wallet app is not installed, the OS would just try to open Safari and throws an error about an invalid link.
+
+You can override this default behavior by setting `shouldVerifyNativeLinks` to `true` on the `defaultModalWidget`. This allows for greater flexibility when you are only interested in some Wallets (using only deep links) and want the correct behaviour. Note that the verification will always fail if the custom scheme is not added to `LSApplicationQueriesSchemes` and the app will be redirected to App Store.
+
+NOTE: This would *ONLY* affect Wallets without registered universal links.
+
+References:
+- [`canOpenUrl`](https://developer.apple.com/documentation/uikit/uiapplication/1622952-canopenurl)
+- [`url_launcher`](https://pub.dev/packages/url_launcher) - package used internally to lauch WC URLs
 
 ### Platform overrides
 

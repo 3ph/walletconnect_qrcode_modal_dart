@@ -1,3 +1,8 @@
+## 0.4.0
+* Adds `searchBuilder` with customization
+* Changes default behavior of native links verfication and adds override flag
+* Sorts Wallets alphabetically
+
 ## 0.3.1
 * Adds return types to `sendCustomRequest` and `killSession`
 
