@@ -20,15 +20,14 @@ class Utils {
     required String wcUri,
     bool isDeepLink = false,
   }) {
-    final appLinkUri = Uri.tryParse(appLink);
-    if (appLinkUri != null) {
-      final uri = Uri(
-          scheme: appLinkUri.scheme,
-          host: appLinkUri.host,
-          path: 'wc?uri=${Uri.encodeComponent(wcUri)}');
-      return uri;
+    final wcPath = 'wc?uri=${Uri.encodeComponent(wcUri)}';
+    if (isDeepLink) {
+      final scheme = Uri.tryParse(appLink)?.scheme;
+      if (scheme != null) {
+        return Uri.parse('$scheme-wc://$wcPath');
+      }
     }
-    return Uri.parse('$appLink/wc?uri=${Uri.encodeComponent(wcUri)}');
+    return Uri.parse('$appLink/$wcPath');
   }
 
   static Future<void> iosLaunch({
@@ -43,7 +42,11 @@ class Utils {
       );
     } else if (!verifyNativeLink || await openableLink(wallet.mobile.native)) {
       await launchUrl(
-        convertToWcLink(appLink: wallet.mobile.native!, wcUri: uri),
+        convertToWcLink(
+          appLink: wallet.mobile.native!,
+          wcUri: uri,
+          isDeepLink: true,
+        ),
       );
     } else {
       if (Utils.isDesktop && await openableLink(wallet.app.browser)) {
