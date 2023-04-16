@@ -43,6 +43,12 @@ final qrCodeModal = WalletConnectQrCodeModal(
      ),
    ),
  );
+
+// Try to initiate connection
+final session = await qrCodeModal.connect(context).catchError((error) {
+  print('Error: $error');
+  return null;
+});
 ```
 
 ```dart
