@@ -24,24 +24,24 @@ class Utils {
     if (isDeepLink) {
       final scheme = Uri.tryParse(appLink)?.scheme;
       if (scheme != null) {
-        return Uri.parse('$scheme-wc://$wcPath');
+        return Uri.parse('$scheme://$wcPath');
       }
     }
     return Uri.parse('$appLink/$wcPath');
   }
 
-  static Future<void> iosLaunch({
+  static Future<bool> iosLaunch({
     required Wallet wallet,
     required String uri,
     required bool verifyNativeLink,
   }) async {
     if (await openableLink(wallet.mobile.universal)) {
-      await launchUrl(
+      return await launchUrl(
         convertToWcLink(appLink: wallet.mobile.universal!, wcUri: uri),
         mode: LaunchMode.externalApplication,
       );
     } else if (!verifyNativeLink || await openableLink(wallet.mobile.native)) {
-      await launchUrl(
+      return await launchUrl(
         convertToWcLink(
           appLink: wallet.mobile.native!,
           wcUri: uri,
@@ -50,28 +50,30 @@ class Utils {
       );
     } else {
       if (Utils.isDesktop && await openableLink(wallet.app.browser)) {
-        await launchUrl(Uri.parse(wallet.app.browser!));
+        return await launchUrl(Uri.parse(wallet.app.browser!));
       } else if (Utils.isAndroid && await openableLink(wallet.app.android)) {
-        await launchUrl(Uri.parse(wallet.app.android!));
+        return await launchUrl(Uri.parse(wallet.app.android!));
       } else if (Utils.isIOS && await openableLink(wallet.app.ios)) {
-        await launchUrl(Uri.parse(wallet.app.ios!));
+        return await launchUrl(Uri.parse(wallet.app.ios!));
       }
     }
+    return false;
   }
 
-  static Future<void> desktopLaunch({
+  static Future<bool> desktopLaunch({
     required Wallet wallet,
     required String uri,
   }) async {
     if (linkHasContent(wallet.desktop.universal)) {
-      await launchUrl(
+      return await launchUrl(
         convertToWcLink(appLink: wallet.desktop.universal!, wcUri: uri),
         mode: LaunchMode.externalApplication,
       );
     } else if (linkHasContent(wallet.desktop.native)) {
-      await launchUrl(
+      return await launchUrl(
         convertToWcLink(appLink: wallet.desktop.native!, wcUri: uri),
       );
     }
+    return false;
   }
 }

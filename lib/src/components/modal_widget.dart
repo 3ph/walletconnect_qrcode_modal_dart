@@ -224,31 +224,57 @@ class _ModalContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void showLinkError(BuildContext context, Wallet wallet) {
+      showDialog(
+        context: context,
+        builder: (context) => SimpleDialog(
+          title: Text('Unable to open ${wallet.name} app!'),
+          children: [
+            SimpleDialogOption(
+              child: Text(
+                'OK',
+                textAlign: TextAlign.center,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        ),
+      );
+    }
+
     Widget platformOverride(ModalWalletType type) {
       switch (type) {
         case ModalWalletType.button:
           return ModalWalletButtonWidget(uri: uri);
         case ModalWalletType.listMobile:
           return ModalWalletListWidget(
-            url: uri,
-            wallets: _mobileWallets,
-            walletCallback: walletCallback,
-            onWalletTap: (wallet, url) => Utils.iosLaunch(
-              wallet: wallet,
-              uri: url,
-              verifyNativeLink: shouldVerifyNativeLinks,
-            ),
-          );
+              url: uri,
+              wallets: _mobileWallets,
+              walletCallback: walletCallback,
+              onWalletTap: (wallet, url) async {
+                final result = await Utils.iosLaunch(
+                  wallet: wallet,
+                  uri: url,
+                  verifyNativeLink: shouldVerifyNativeLinks,
+                );
+                if (!result) {
+                  showLinkError(context, wallet);
+                }
+              });
         case ModalWalletType.listDesktop:
           return ModalWalletListWidget(
-            url: uri,
-            wallets: _desktopWallets,
-            walletCallback: walletCallback,
-            onWalletTap: (wallet, url) => Utils.desktopLaunch(
-              wallet: wallet,
-              uri: uri,
-            ),
-          );
+              url: uri,
+              wallets: _desktopWallets,
+              walletCallback: walletCallback,
+              onWalletTap: (wallet, url) async {
+                final result = await Utils.desktopLaunch(
+                  wallet: wallet,
+                  uri: uri,
+                );
+                if (!result) {
+                  showLinkError(context, wallet);
+                }
+              });
       }
     }
 
