@@ -178,7 +178,7 @@ class EthereumTestConnector implements TestConnector {
   }
 
   @override
-  Future<void> openWalletApp() async => await _connector.openWalletApp();
+  Future<bool> openWalletApp() => _connector.openWalletApp();
 
   @override
   Future<double> getBalance() async {

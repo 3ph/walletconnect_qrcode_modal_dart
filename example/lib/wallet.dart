@@ -191,7 +191,23 @@ class _WalletPageState extends State<WalletPage> {
         // Send transaction
         setState(() => state = TransactionState.sending);
 
-        Future.delayed(Duration.zero, () => widget.connector.openWalletApp());
+        Future.delayed(Duration.zero, () async {
+          final result = await widget.connector.openWalletApp();
+          if (!result) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: const Text('Failed to open the Wallet app'),
+                actions: [
+                  TextButton(
+                    child: const Text('OK'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              ),
+            );
+          }
+        });
 
         final hash = await widget.connector.sendTestingAmount(
             recipientAddress: addressController.text,

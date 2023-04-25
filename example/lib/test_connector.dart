@@ -9,7 +9,7 @@ abstract class TestConnector {
     required double amount,
   });
 
-  Future<void> openWalletApp();
+  Future<bool> openWalletApp();
 
   Future<double> getBalance();
 
