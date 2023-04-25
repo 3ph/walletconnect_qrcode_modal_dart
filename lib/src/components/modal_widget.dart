@@ -64,6 +64,7 @@ class ModalWidget extends StatefulWidget {
     this.qrCodeBuilder,
     this.platformOverrides,
     this.shouldVerifyNativeLinks = false,
+    this.onOpenWalletFailure,
     Key? key,
   }) : super(key: key);
 
@@ -108,6 +109,10 @@ class ModalWidget extends StatefulWidget {
   /// `LSApplicationQueriesSchemes`. Default is false.
   final bool shouldVerifyNativeLinks;
 
+  /// This callback is invoked when the Wallet link fails to open.
+  /// Parameter is the failed Wallet object.
+  final Function(Wallet)? onOpenWalletFailure;
+
   @override
   State<ModalWidget> createState() => _ModalWidgetState();
 
@@ -123,6 +128,7 @@ class ModalWidget extends StatefulWidget {
     ModalQrCodeBuilder? qrCodeBuilder,
     ModalWalletPlatformOverrides? platformOverrides,
     bool? shouldVerifyNativeLinks,
+    Function(Wallet)? onOpenWalletFailure,
     Key? key,
   }) =>
       ModalWidget(
@@ -140,6 +146,7 @@ class ModalWidget extends StatefulWidget {
         platformOverrides: platformOverrides ?? this.platformOverrides,
         shouldVerifyNativeLinks:
             shouldVerifyNativeLinks ?? this.shouldVerifyNativeLinks,
+        onOpenWalletFailure: onOpenWalletFailure ?? this.onOpenWalletFailure,
         key: key ?? this.key,
       );
 }
@@ -188,6 +195,7 @@ class _ModalWidgetState extends State<ModalWidget> {
                       qrCodeBuilder: widget.qrCodeBuilder,
                       platformOverrides: widget.platformOverrides,
                       shouldVerifyNativeLinks: widget.shouldVerifyNativeLinks,
+                      onOpenWalletFailure: widget.onOpenWalletFailure,
                     ),
                   ),
                 ],
@@ -210,6 +218,7 @@ class _ModalContent extends StatelessWidget {
     this.walletListBuilder,
     this.qrCodeBuilder,
     this.platformOverrides,
+    this.onOpenWalletFailure,
     Key? key,
   }) : super(key: key);
 
@@ -221,6 +230,7 @@ class _ModalContent extends StatelessWidget {
   final ModalQrCodeBuilder? qrCodeBuilder;
   final ModalWalletPlatformOverrides? platformOverrides;
   final bool shouldVerifyNativeLinks;
+  final Function(Wallet)? onOpenWalletFailure;
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +241,7 @@ class _ModalContent extends StatelessWidget {
           title: Text('Unable to open ${wallet.name} app!'),
           children: [
             SimpleDialogOption(
-              child: Text(
+              child: const Text(
                 'OK',
                 textAlign: TextAlign.center,
               ),
@@ -248,33 +258,47 @@ class _ModalContent extends StatelessWidget {
           return ModalWalletButtonWidget(uri: uri);
         case ModalWalletType.listMobile:
           return ModalWalletListWidget(
-              url: uri,
-              wallets: _mobileWallets,
-              walletCallback: walletCallback,
-              onWalletTap: (wallet, url) async {
-                final result = await Utils.iosLaunch(
-                  wallet: wallet,
-                  uri: url,
-                  verifyNativeLink: shouldVerifyNativeLinks,
-                );
-                if (!result) {
-                  showLinkError(context, wallet);
+            url: uri,
+            wallets: _mobileWallets,
+            walletCallback: walletCallback,
+            onWalletTap: (wallet, url) async {
+              final result = await Utils.iosLaunch(
+                wallet: wallet,
+                uri: url,
+                verifyNativeLink: shouldVerifyNativeLinks,
+              );
+              if (!result) {
+                if (onOpenWalletFailure != null) {
+                  onOpenWalletFailure!.call(wallet);
+                } else {
+                  if (context.mounted) {
+                    showLinkError(context, wallet);
+                  }
                 }
-              });
+              }
+            },
+          );
         case ModalWalletType.listDesktop:
           return ModalWalletListWidget(
-              url: uri,
-              wallets: _desktopWallets,
-              walletCallback: walletCallback,
-              onWalletTap: (wallet, url) async {
-                final result = await Utils.desktopLaunch(
-                  wallet: wallet,
-                  uri: uri,
-                );
-                if (!result) {
-                  showLinkError(context, wallet);
+            url: uri,
+            wallets: _desktopWallets,
+            walletCallback: walletCallback,
+            onWalletTap: (wallet, url) async {
+              final result = await Utils.desktopLaunch(
+                wallet: wallet,
+                uri: uri,
+              );
+              if (!result) {
+                if (onOpenWalletFailure != null) {
+                  onOpenWalletFailure!.call(wallet);
+                } else {
+                  if (context.mounted) {
+                    showLinkError(context, wallet);
+                  }
                 }
-              });
+              }
+            },
+          );
       }
     }
 

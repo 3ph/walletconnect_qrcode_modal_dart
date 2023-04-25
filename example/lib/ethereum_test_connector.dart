@@ -117,6 +117,10 @@ class EthereumTestConnector implements TestConnector {
       //         backgroundColor: Colors.orange,
       //       ),
       //     ),
+      //     onOpenWalletFailure: (wallet) =>
+      //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //       content: Text('Open ${wallet.name} app failed'),
+      //     )),
       //   );
       // },
     );
