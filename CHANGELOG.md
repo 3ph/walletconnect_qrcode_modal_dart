@@ -1,3 +1,8 @@
+## 0.4.1
+* Fixes schema link issue
+* Adds error dialog when Wallet link cannot be opened
+* Adds customization for above dialog
+
 ## 0.4.0
 * Adds `searchBuilder` with customization
 * Changes default behavior of native links verfication and adds override flag
