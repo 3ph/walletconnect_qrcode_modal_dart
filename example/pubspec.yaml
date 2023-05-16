@@ -12,7 +12,7 @@ dependencies:
   algorand_dart: ^1.0.3
   flutter:
     sdk: flutter
-  url_launcher: ^6.1.8
+  url_launcher: ^6.1.11
   walletconnect_qrcode_modal_dart:
     path: ..
   web3dart: ^2.6.1
