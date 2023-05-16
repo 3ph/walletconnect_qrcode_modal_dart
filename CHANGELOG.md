@@ -1,3 +1,6 @@
+## 0.4.2
+* Fixes QrImage breaking change
+
 ## 0.4.1
 * Fixes schema link issue
 * Adds error dialog when Wallet link cannot be opened
