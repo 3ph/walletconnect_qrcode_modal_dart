@@ -6,7 +6,7 @@ repository: https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart
 issue_tracker: https://github.com/nextchapterstudio/walletconnect_qrcode_modal_dart/issues
 
 environment:
-  sdk: ">=2.15.1 <3.0.0"
+  sdk: ">=2.15.1 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
