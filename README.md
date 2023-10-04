@@ -9,6 +9,11 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
+## IMPORTANT
+WalletConnect V1 has been sunset on 28th June 2023 and the bridge servers has been taken offline. This means that this package won't work anymore without unofficial V1 bridge server.
+
+Please read more about V1 sunset [here](https://medium.com/walletconnect/weve-reset-the-clock-on-the-walletconnect-v1-0-shutdown-now-scheduled-for-june-28-2023-ead2d953b595).
+
 WalletConnect is an open-source protocol for connecting decentralised applications to mobile wallets
 with QR code scanning or deep linking. A user can interact securely with any Dapp from their mobile
 phone, making WalletConnect wallets a safer choice compared to desktop or browser extension wallets.
