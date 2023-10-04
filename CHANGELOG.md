@@ -1,3 +1,6 @@
+## 0.4.3
+* Updates README and some dependencies
+
 ## 0.4.2
 * Fixes QrImage breaking change
 
